@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kryptomon Monopoly - Perfect Edition</title>
+<title>Kryptomon Monopoly - Mobile Edition</title>
 <style>
 * {
   margin: 0;
@@ -20,16 +20,16 @@ body {
 }
 
 .container {
-  max-width: 1600px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px;
 }
 
 h1 {
   text-align: center;
   color: #00f5ff;
-  font-size: 3rem;
-  margin-bottom: 30px;
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  margin-bottom: 20px;
   text-shadow: 0 0 30px #00f5ff;
   animation: titleGlow 2s ease-in-out infinite alternate;
   font-weight: 900;
@@ -43,7 +43,7 @@ h1 {
 /* Menu */
 .menu {
   text-align: center;
-  padding: 80px 0;
+  padding: 40px 20px;
   background: rgba(26, 26, 46, 0.3);
   border-radius: 30px;
   backdrop-filter: blur(10px);
@@ -53,19 +53,20 @@ h1 {
 .menu button {
   background: linear-gradient(45deg, #00f5ff, #0080ff);
   border: none;
-  padding: 20px 40px;
-  margin: 15px;
-  font-size: 20px;
+  padding: 15px 30px;
+  margin: 10px;
+  font-size: 16px;
   color: white;
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.4s ease;
   box-shadow: 0 8px 30px rgba(0, 245, 255, 0.4);
   font-weight: bold;
+  min-width: 150px;
 }
 
 .menu button:hover {
-  transform: translateY(-5px) scale(1.05);
+  transform: translateY(-2px) scale(1.05);
   box-shadow: 0 15px 40px rgba(0, 245, 255, 0.6);
 }
 
@@ -75,71 +76,81 @@ h1 {
 }
 
 .game-layout {
-  display: grid;
-  grid-template-columns: 300px 700px 300px;
-  gap: 30px;
-  align-items: start;
-  max-width: 1400px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 100%;
 }
 
-.left-panel, .right-panel {
+/* Player Info Section - Center Top */
+.player-info-section {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  padding: 15px;
   background: linear-gradient(145deg, rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9));
   border-radius: 25px;
-  padding: 25px;
   border: 3px solid rgba(0, 245, 255, 0.3);
   backdrop-filter: blur(15px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* Player Panels */
-.player-panel {
-  background: linear-gradient(145deg, rgba(26, 26, 46, 0.95), rgba(22, 33, 62, 0.95));
+.player-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
   border-radius: 20px;
-  padding: 25px;
-  margin-bottom: 25px;
-  border: 3px solid rgba(0, 245, 255, 0.2);
   transition: all 0.5s ease;
-  text-align: center;
-  backdrop-filter: blur(10px);
+  min-width: 140px;
+  background: rgba(26, 26, 46, 0.5);
+  border: 2px solid rgba(0, 245, 255, 0.2);
 }
 
-.player-panel.active {
+.player-info.active {
   border-color: #00f5ff;
-  box-shadow: 0 0 40px rgba(0, 245, 255, 0.5);
-  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+  transform: scale(1.05);
 }
 
 .player-avatar {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  border: 4px solid #00f5ff;
+  border: 3px solid #00f5ff;
   background-size: cover;
   background-position: center;
-  margin: 0 auto 15px;
-  box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+  margin-bottom: 10px;
+  box-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
 }
 
 .player-avatar.player { background-image: url('character.png'); }
 .player-avatar.cpu { background-image: url('character2.png'); }
 
 .player-name {
-  font-size: 24px;
+  font-size: 16px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   color: #00f5ff;
+  text-align: center;
 }
 
 .player-money {
-  font-size: 28px;
+  font-size: 18px;
   color: #2ed573;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   font-weight: bold;
+  text-align: center;
 }
 
 .player-properties {
-  font-size: 16px;
+  font-size: 12px;
   color: #ccc;
+  text-align: center;
 }
 
 /* Game Board */
@@ -147,33 +158,34 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 
 .board {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(5, 1fr);
-  gap: 3px;
-  width: 700px;
-  height: 700px;
+  gap: 2px;
+  width: min(90vw, 500px);
+  height: min(90vw, 500px);
   background: linear-gradient(45deg, #0f1419, #1a1a2e);
-  border: 6px solid #00f5ff;
-  border-radius: 20px;
-  padding: 15px;
-  box-shadow: 0 0 50px rgba(0, 245, 255, 0.6);
-  margin-bottom: 30px;
+  border: 4px solid #00f5ff;
+  border-radius: 15px;
+  padding: 10px;
+  box-shadow: 0 0 30px rgba(0, 245, 255, 0.6);
+  margin-bottom: 20px;
 }
 
 .cell {
   background: linear-gradient(145deg, rgba(26, 26, 46, 0.95), rgba(22, 33, 62, 0.95));
-  border-radius: 12px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: 8px;
+  padding: 4px;
   position: relative;
-  border: 2px solid rgba(0, 245, 255, 0.2);
+  border: 1px solid rgba(0, 245, 255, 0.2);
   transition: all 0.3s ease;
 }
 
@@ -184,43 +196,42 @@ h1 {
 
 .cell:not(.empty):hover {
   border-color: #00f5ff;
-  box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
-  transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
 }
 
 .cell-name {
-  font-size: 11px;
+  font-size: clamp(7px, 2vw, 10px);
   font-weight: bold;
   text-align: center;
   color: #fff;
   line-height: 1.1;
-  margin-bottom: 5px;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  margin-bottom: 3px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
 .cell-rent {
   background: linear-gradient(45deg, #00f5ff, #0080ff);
   color: #000;
-  padding: 2px 6px;
-  border-radius: 6px;
-  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-size: clamp(6px, 1.5vw, 8px);
   font-weight: bold;
   margin-top: auto;
 }
 
 .cell-building {
-  font-size: 12px;
-  margin-top: 2px;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  font-size: clamp(8px, 2vw, 12px);
+  margin-top: 1px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
 .owner-tag {
   position: absolute;
-  top: 3px;
-  right: 3px;
-  padding: 1px 4px;
-  border-radius: 6px;
-  font-size: 8px;
+  top: 2px;
+  right: 2px;
+  padding: 1px 3px;
+  border-radius: 4px;
+  font-size: clamp(6px, 1.5vw, 8px);
   font-weight: bold;
 }
 
@@ -229,28 +240,28 @@ h1 {
 
 .player-token {
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: clamp(20px, 5vw, 25px);
+  height: clamp(20px, 5vw, 25px);
   border-radius: 50%;
-  border: 3px solid #fff;
+  border: 2px solid #fff;
   transition: all 0.8s ease;
   z-index: 15;
   background-size: cover;
   background-position: center;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
 .token-player {
   background-image: url('kryptomon.png');
-  bottom: 5px;
-  left: 5px;
+  bottom: 3px;
+  left: 3px;
   border-color: #00f5ff;
 }
 
 .token-cpu {
   background-image: url('kryptomon2.png');
-  bottom: 5px;
-  right: 5px;
+  bottom: 3px;
+  right: 3px;
   border-color: #2ed573;
 }
 
@@ -258,20 +269,20 @@ h1 {
 .cell.start {
   background: linear-gradient(145deg, #32cd32, #228b22) !important;
   color: #fff !important;
-  border: 4px solid #32cd32 !important;
-  box-shadow: 0 0 30px rgba(50, 205, 50, 1) !important;
+  border: 3px solid #32cd32 !important;
+  box-shadow: 0 0 20px rgba(50, 205, 50, 1) !important;
 }
 
 .cell.start .cell-name {
   color: #fff !important;
-  font-size: 14px !important;
+  font-size: clamp(8px, 2.5vw, 12px) !important;
   font-weight: 900 !important;
-  text-shadow: 0 0 20px rgba(255, 255, 255, 1) !important;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 1) !important;
 }
 
 .cell.start .player-token {
-  border-width: 4px !important;
-  box-shadow: 0 0 25px rgba(255, 255, 255, 1) !important;
+  border-width: 3px !important;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 1) !important;
   z-index: 25 !important;
 }
 
@@ -297,32 +308,34 @@ h1 {
 /* Dice Section */
 .dice-section {
   display: flex;
-  gap: 20px;
+  gap: 15px;
   align-items: center;
   justify-content: center;
-  margin-bottom: 30px;
-  padding: 20px;
+  margin-bottom: 20px;
+  padding: 15px;
   background: rgba(26, 26, 46, 0.3);
-  border-radius: 25px;
+  border-radius: 20px;
   backdrop-filter: blur(10px);
   border: 2px solid rgba(0, 245, 255, 0.3);
+  width: 100%;
+  max-width: 400px;
 }
 
 .dice {
-  width: 70px;
-  height: 70px;
+  width: clamp(50px, 12vw, 60px);
+  height: clamp(50px, 12vw, 60px);
   background: linear-gradient(45deg, #00f5ff, #0080ff);
-  border-radius: 15px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: clamp(20px, 5vw, 24px);
   font-weight: bold;
   color: white;
   cursor: pointer;
   transition: all 0.4s ease;
-  box-shadow: 0 8px 25px rgba(0, 245, 255, 0.4);
-  border: 3px solid #fff;
+  box-shadow: 0 6px 20px rgba(0, 245, 255, 0.4);
+  border: 2px solid #fff;
 }
 
 .dice:hover {
@@ -335,27 +348,27 @@ h1 {
 
 @keyframes roll {
   0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(180deg) scale(1.3); }
+  50% { transform: rotate(180deg) scale(1.2); }
   100% { transform: rotate(360deg) scale(1); }
 }
 
 .roll-btn {
   background: linear-gradient(45deg, #ff6b6b, #ff8e53);
   border: none;
-  padding: 15px 30px;
+  padding: 12px 20px;
   color: white;
-  border-radius: 25px;
-  font-size: 18px;
+  border-radius: 20px;
+  font-size: clamp(14px, 3.5vw, 16px);
   cursor: pointer;
   transition: all 0.4s ease;
-  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
-  margin-left: 20px;
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
   font-weight: bold;
+  min-width: 100px;
 }
 
 .roll-btn:hover:not(:disabled) {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 15px 40px rgba(255, 107, 107, 0.6);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(255, 107, 107, 0.6);
 }
 
 .roll-btn:disabled {
@@ -371,56 +384,60 @@ h1 {
   transform: translate(-50%, -50%);
   background: linear-gradient(145deg, rgba(26, 26, 46, 0.98), rgba(22, 33, 62, 0.98));
   border: 3px solid #00f5ff;
-  border-radius: 25px;
-  padding: 30px;
+  border-radius: 20px;
+  padding: 20px;
   z-index: 2000;
   display: none;
-  min-width: 600px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
   backdrop-filter: blur(20px);
   box-shadow: 0 0 50px rgba(0, 245, 255, 0.6);
   text-align: center;
 }
 
 .purchase-title {
-  font-size: 28px;
+  font-size: clamp(20px, 5vw, 24px);
   color: #00f5ff;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   font-weight: bold;
 }
 
 .property-details {
   background: rgba(0, 0, 0, 0.4);
-  padding: 15px;
+  padding: 12px;
   border-radius: 10px;
-  margin: 15px 0;
+  margin: 12px 0;
   text-align: left;
   border: 1px solid rgba(0, 245, 255, 0.2);
+  font-size: clamp(12px, 3vw, 14px);
 }
 
 .upgrade-options {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin: 20px 0;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
 }
 
 .upgrade-btn {
   background: linear-gradient(45deg, #ffa500, #ff8c00);
   border: none;
-  padding: 15px 10px;
+  padding: 12px 8px;
   color: white;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: clamp(10px, 2.5vw, 12px);
   font-weight: bold;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
-  min-height: 80px;
+  min-height: 60px;
 }
 
 .upgrade-btn:hover:not(:disabled) {
   transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(255, 165, 0, 0.5);
+  box-shadow: 0 6px 20px rgba(255, 165, 0, 0.5);
 }
 
 .upgrade-btn:disabled {
@@ -435,15 +452,15 @@ h1 {
 .purchase-from-opponent {
   background: linear-gradient(45deg, #8b00ff, #4b0082);
   grid-column: 1 / -1;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .skip-btn {
   background: linear-gradient(45deg, #666, #888);
-  margin-top: 15px;
-  padding: 12px 25px;
-  font-size: 16px;
-  border-radius: 20px;
+  margin-top: 12px;
+  padding: 10px 20px;
+  font-size: clamp(14px, 3.5vw, 16px);
+  border-radius: 15px;
   border: none;
   color: white;
   cursor: pointer;
@@ -458,43 +475,45 @@ h1 {
   transform: translate(-50%, -50%);
   background: linear-gradient(145deg, rgba(26, 26, 46, 0.98), rgba(22, 33, 62, 0.98));
   border: 3px solid #00f5ff;
-  border-radius: 20px;
-  padding: 25px 35px;
+  border-radius: 15px;
+  padding: 20px 25px;
   color: #fff;
-  font-size: 18px;
+  font-size: clamp(14px, 3.5vw, 16px);
   text-align: center;
   z-index: 2500;
   display: none;
   backdrop-filter: blur(15px);
   box-shadow: 0 0 50px rgba(0, 245, 255, 0.6);
-  max-width: 500px;
-  min-width: 300px;
+  max-width: 80%;
+  width: 300px;
 }
 
 /* Game Info */
 .game-info {
   text-align: center;
-  font-size: 20px;
-  margin: 20px 0;
+  font-size: clamp(14px, 3.5vw, 18px);
+  margin: 15px 0;
   color: #00f5ff;
   font-weight: bold;
-  padding: 10px 20px;
+  padding: 10px 15px;
   background: rgba(26, 26, 46, 0.3);
   border-radius: 15px;
   border: 2px solid rgba(0, 245, 255, 0.3);
   backdrop-filter: blur(10px);
+  max-width: 400px;
+  width: 100%;
 }
 
 .back-btn {
   background: linear-gradient(45deg, #666, #888);
   border: none;
-  padding: 12px 25px;
+  padding: 10px 20px;
   color: white;
-  border-radius: 20px;
+  border-radius: 15px;
   cursor: pointer;
   margin: 20px auto;
   display: block;
-  font-size: 16px;
+  font-size: clamp(14px, 3.5vw, 16px);
   font-weight: bold;
   transition: all 0.3s ease;
 }
@@ -502,13 +521,14 @@ h1 {
 .close-btn {
   background: #ff4757;
   border: none;
-  padding: 8px 15px;
+  padding: 6px 12px;
   color: white;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   float: right;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   font-weight: bold;
+  font-size: clamp(12px, 3vw, 14px);
 }
 
 /* Other panels */
@@ -518,10 +538,11 @@ h1 {
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 20px;
-  padding: 30px;
+  padding: 25px;
   z-index: 2000;
   display: none;
-  min-width: 400px;
+  width: 90%;
+  max-width: 400px;
   text-align: center;
   backdrop-filter: blur(15px);
 }
@@ -541,25 +562,84 @@ h1 {
 
 .jail-buttons {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 15px;
+  flex-wrap: wrap;
 }
 
 .jail-btn {
   background: linear-gradient(45deg, #ffa500, #ff8c00);
   border: none;
-  padding: 12px 20px;
+  padding: 10px 15px;
   color: white;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: clamp(12px, 3vw, 14px);
   transition: all 0.3s ease;
   font-weight: bold;
+  min-width: 100px;
 }
 
 .jail-btn:hover {
   transform: scale(1.05);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 5px;
+  }
+  
+  .player-info-section {
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px;
+  }
+  
+  .player-info {
+    min-width: 120px;
+    padding: 10px;
+  }
+  
+  .board {
+    margin-bottom: 15px;
+  }
+  
+  .dice-section {
+    padding: 10px;
+    gap: 10px;
+  }
+  
+  .upgrade-options {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .jail-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-info-section {
+    gap: 10px;
+  }
+  
+  .player-info {
+    min-width: 100px;
+    padding: 8px;
+  }
+  
+  .upgrade-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .dice-section {
+    flex-direction: column;
+    gap: 8px;
+  }
 }
 </style>
 </head>
@@ -578,37 +658,34 @@ h1 {
   <!-- Game Screen -->
   <div id="game" class="game-container">
     <div class="game-layout">
-      <!-- Left Panel -->
-      <div class="left-panel">
-        <div id="playerPanel" class="player-panel">
+      <!-- Player Info Section - Center Top -->
+      <div class="player-info-section">
+        <div id="playerInfo" class="player-info">
           <div class="player-avatar player"></div>
           <div class="player-name">👤 YOU</div>
           <div class="player-money">💰 $<span id="playerMoney">1500</span></div>
           <div class="player-properties">Properties: <span id="playerProps">0</span></div>
         </div>
+        
+        <div id="cpuInfo" class="player-info">
+          <div class="player-avatar cpu"></div>
+          <div class="player-name">🤖 CPU</div>
+          <div class="player-money">💰 $<span id="cpuMoney">1500</span></div>
+          <div class="player-properties">Properties: <span id="cpuProps">0</span></div>
+        </div>
       </div>
 
-      <!-- Center - Game Board -->
+      <!-- Game Board -->
       <div class="board-container">
         <div id="board" class="board"></div>
         
         <div class="dice-section">
           <div id="dice1" class="dice">1</div>
           <div id="dice2" class="dice">1</div>
-          <button id="rollBtn" class="roll-btn" onclick="rollDice()">🎲 ROLL DICE</button>
+          <button id="rollBtn" class="roll-btn" onclick="rollDice()">🎲 ROLL</button>
         </div>
 
         <div id="gameInfo" class="game-info">Your Turn - Roll the Dice!</div>
-      </div>
-
-      <!-- Right Panel -->
-      <div class="right-panel">
-        <div id="cpuPanel" class="player-panel">
-          <div class="player-avatar cpu"></div>
-          <div class="player-name">🤖 CPU</div>
-          <div class="player-money">💰 $<span id="cpuMoney">1500</span></div>
-          <div class="player-properties">Properties: <span id="cpuProps">0</span></div>
-        </div>
       </div>
     </div>
 
@@ -640,7 +717,7 @@ h1 {
   <div id="chanceCard" class="chance-card">
     <h2>🎲 CHANCE 🎲</h2>
     <div id="chanceText"></div>
-    <button class="jail-btn" onclick="closeChanceCard()" style="margin-top: 20px;">OK</button>
+    <button class="jail-btn" onclick="closeChanceCard()" style="margin-top: 15px;">OK</button>
   </div>
 
   <!-- Jail Panel -->
@@ -716,14 +793,14 @@ const boardPositions = [
   { name: 'Thunder Peak', type: 'property', price: 280, baseRent: 65 }
 ];
 
-// Chance cards
+// Reduced chance cards (half rewards)
 const chanceCards = [
   { text: "Get out of jail free! Keep this card.", effect: "jailFree" },
-  { text: "Collect $200 from bank!", effect: "collect200" },
+  { text: "Collect $100 from bank!", effect: "collect100" },
   { text: "Go to jail! Do not pass START.", effect: "goToJail" },
-  { text: "Advance to START! Collect $200.", effect: "goToStart" },
-  { text: "Pay $50 tax!", effect: "pay50" },
-  { text: "Collect $100 bonus!", effect: "collect100" }
+  { text: "Advance to START! Collect $100.", effect: "goToStart" },
+  { text: "Pay $25 tax!", effect: "pay25" },
+  { text: "Collect $50 bonus!", effect: "collect50" }
 ];
 
 function initGame() {
@@ -858,6 +935,43 @@ function updatePropertyDisplay() {
   });
 }
 
+function updateDisplay() {
+  // Update player money and properties
+  document.getElementById('playerMoney').textContent = gameState.players[0].money;
+  document.getElementById('cpuMoney').textContent = gameState.players[1].money;
+  
+  // Count properties
+  const playerProps = Object.keys(gameState.players[0].properties).length;
+  const cpuProps = Object.keys(gameState.players[1].properties).length;
+  
+  document.getElementById('playerProps').textContent = playerProps;
+  document.getElementById('cpuProps').textContent = cpuProps;
+  
+  // Update active player
+  const playerInfo = document.getElementById('playerInfo');
+  const cpuInfo = document.getElementById('cpuInfo');
+  
+  if (gameState.currentPlayer === 0) {
+    playerInfo.classList.add('active');
+    cpuInfo.classList.remove('active');
+  } else {
+    cpuInfo.classList.add('active');
+    playerInfo.classList.remove('active');
+  }
+  
+  updatePropertyDisplay();
+}
+
+function updateGameInfo(message = '') {
+  const gameInfo = document.getElementById('gameInfo');
+  if (message) {
+    gameInfo.textContent = message;
+  } else {
+    const currentPlayerName = gameState.players[gameState.currentPlayer].name;
+    gameInfo.textContent = `${currentPlayerName}'s Turn`;
+  }
+}
+
 function getPropertyData(positionIndex) {
   for (let i = 0; i < gameState.players.length; i++) {
     if (gameState.players[i].properties[positionIndex]) {
@@ -936,6 +1050,16 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function showMessage(message) {
+  const messageBox = document.getElementById('messageBox');
+  messageBox.textContent = message;
+  messageBox.style.display = 'block';
+  
+  setTimeout(() => {
+    messageBox.style.display = 'none';
+  }, 2500);
+}
+
 async function rollDice() {
   if (!gameState.canRoll || gameState.waitingForPlayer) return;
   
@@ -990,10 +1114,10 @@ async function movePlayer(playerIndex, steps) {
     await sleep(200);
   }
   
-  // Check if passed START
+  // Check if passed START - reduced to $100
   if (startPos + steps >= boardPositions.length || (startPos > player.position && steps < boardPositions.length)) {
-    player.money += 200;
-    showMessage(`${player.name} passed START and collected $200!`);
+    player.money += 100;
+    showMessage(`${player.name} passed START and collected $100!`);
     await sleep(1000);
   }
 }
@@ -1080,13 +1204,13 @@ async function handleChanceLanding() {
     };
   });
   
-  // Apply effect
+  // Apply effect (reduced amounts)
   switch (card.effect) {
     case 'jailFree':
       player.jailFreeCard = true;
       break;
-    case 'collect200':
-      player.money += 200;
+    case 'collect100':
+      player.money += 100;
       break;
     case 'goToJail':
       player.inJail = true;
@@ -1096,72 +1220,102 @@ async function handleChanceLanding() {
       break;
     case 'goToStart':
       player.position = 0;
-      player.money += 200;
+      player.money += 100;
       updateTokens();
       break;
-    case 'pay50':
-      player.money -= 50;
+    case 'pay25':
+      player.money -= 25;
       break;
-    case 'collect100':
-      player.money += 100;
+    case 'collect50':
+      player.money += 50;
       break;
   }
   
-  await sleep(1000);
+  updateDisplay();
 }
 
-function showPurchasePanel(positionIndex, position, canBuy) {
+function showPurchasePanel(positionIndex, position, isAvailable) {
+  const panel = document.getElementById('purchasePanel');
   const propertyData = getPropertyData(positionIndex);
-  const currentRent = calculateRent(positionIndex);
   
   document.getElementById('propertyName').textContent = position.name;
   document.getElementById('propertyPrice').textContent = position.price;
-  document.getElementById('currentRentDisplay').textContent = currentRent;
+  document.getElementById('currentRentDisplay').textContent = calculateRent(positionIndex);
+  
+  // Calculate rent values for each level
+  const baseRent = position.baseRent;
+  document.getElementById('rent1').textContent = baseRent * 2;
+  document.getElementById('rent2').textContent = baseRent * 3;
+  document.getElementById('rent3').textContent = baseRent * 4;
+  document.getElementById('rent4').textContent = baseRent * 5;
+  document.getElementById('rentHotel').textContent = baseRent * 8;
+  
+  const upgradeOptions = document.getElementById('upgradeOptions');
+  const buyBtn = document.getElementById('buyBtn');
+  const purchaseFromOpponent = document.getElementById('purchaseFromOpponent');
   
   // Hide all buttons first
-  document.getElementById('buyBtn').style.display = 'none';
-  document.getElementById('purchaseFromOpponent').style.display = 'none';
-  document.querySelectorAll('.upgrade-btn:not(#buyBtn):not(#purchaseFromOpponent)').forEach(btn => {
-    btn.style.display = 'none';
-  });
+  Array.from(upgradeOptions.children).forEach(btn => btn.style.display = 'none');
   
-  if (canBuy && propertyData.owner === undefined) {
-    // Show buy button only
-    document.getElementById('buyBtn').style.display = 'block';
+  if (isAvailable) {
+    // Show buy button
+    buyBtn.style.display = 'block';
     document.getElementById('buyPrice').textContent = position.price;
-  } else if (propertyData.owner !== undefined && propertyData.owner !== gameState.currentPlayer) {
-    // Show purchase from opponent
-    const opponentPrice = Math.floor(position.price * 1.5);
-    document.getElementById('purchaseFromOpponent').style.display = 'block';
-    document.getElementById('opponentPrice').textContent = opponentPrice;
+    buyBtn.disabled = gameState.players[gameState.currentPlayer].money < position.price;
   } else if (propertyData.owner === gameState.currentPlayer) {
-    // Show upgrade options
-    document.querySelectorAll('.upgrade-btn:not(#buyBtn):not(#purchaseFromOpponent)').forEach(btn => {
-      btn.style.display = 'block';
-    });
+    // Show upgrade options for owned property
+    const currentLevel = propertyData.level || 0;
+    const hasHotel = propertyData.hotel || false;
+    const currentMoney = gameState.players[gameState.currentPlayer].money;
     
-    // Update rent displays
-    document.getElementById('rent1').textContent = position.baseRent * 2;
-    document.getElementById('rent2').textContent = position.baseRent * 3;
-    document.getElementById('rent3').textContent = position.baseRent * 4;
-    document.getElementById('rent4').textContent = position.baseRent * 5;
-    document.getElementById('rentHotel').textContent = position.baseRent * 8;
-    
-    // Disable completed upgrades
-    if (propertyData.level >= 1) document.querySelector('[onclick="upgradeProperty(1)"]').disabled = true;
-    if (propertyData.level >= 2) document.querySelector('[onclick="upgradeProperty(2)"]').disabled = true;
-    if (propertyData.level >= 3) document.querySelector('[onclick="upgradeProperty(3)"]').disabled = true;
-    if (propertyData.level >= 4) document.querySelector('[onclick="upgradeProperty(4)"]').disabled = true;
-    if (propertyData.hotel) document.querySelector('[onclick="buildHotel()"]').disabled = true;
-    if (propertyData.level < 4) document.querySelector('[onclick="buildHotel()"]').disabled = true;
+    if (!hasHotel) {
+      // Show level upgrade buttons
+      for (let level = 1; level <= 4; level++) {
+        const btn = upgradeOptions.children[level];
+        btn.style.display = 'block';
+        
+        if (level <= currentLevel) {
+          btn.disabled = true;
+          btn.style.opacity = '0.3';
+        } else if (level === currentLevel + 1) {
+          btn.disabled = currentMoney < 50 * level;
+        } else {
+          btn.disabled = true;
+          btn.style.opacity = '0.5';
+        }
+      }
+      
+      // Show hotel button if level 4
+      if (currentLevel >= 4) {
+        const hotelBtn = upgradeOptions.children[5];
+        hotelBtn.style.display = 'block';
+        hotelBtn.disabled = currentMoney < 300;
+      }
+    }
+  } else {
+    // Show purchase from opponent option
+    purchaseFromOpponent.style.display = 'block';
+    const opponentPrice = Math.floor(position.price * 1.5);
+    document.getElementById('opponentPrice').textContent = opponentPrice;
+    purchaseFromOpponent.disabled = gameState.players[gameState.currentPlayer].money < opponentPrice;
   }
   
-  document.getElementById('purchasePanel').style.display = 'block';
+  panel.style.display = 'block';
+}
+
+function closePurchasePanel() {
+  document.getElementById('purchasePanel').style.display = 'none';
+  gameState.waitingForPlayer = false;
+  nextTurn();
+}
+
+function skipPurchase() {
+  closePurchasePanel();
 }
 
 function buyProperty() {
   const player = gameState.players[gameState.currentPlayer];
-  const positionIndex = player.position;
+  const positionIndex = parseInt(document.querySelector('[data-position]').dataset.position);
   const position = boardPositions[positionIndex];
   
   if (player.money >= position.price) {
@@ -1173,19 +1327,13 @@ function buyProperty() {
     };
     
     showMessage(`You bought ${position.name} for $${position.price}!`);
-    closePurchasePanel();
     updateDisplay();
-    updatePropertyDisplay();
-    
-    gameState.waitingForPlayer = false;
-    setTimeout(nextTurn, 1500);
-  } else {
-    showMessage('Not enough money!');
+    closePurchasePanel();
   }
 }
 
 function buyPropertyCPU(positionIndex) {
-  const player = gameState.players[1]; // CPU
+  const player = gameState.players[1]; // CPU is player 1
   const position = boardPositions[positionIndex];
   
   player.money -= position.price;
@@ -1194,257 +1342,128 @@ function buyPropertyCPU(positionIndex) {
     level: 0,
     hotel: false
   };
-  
-  updateDisplay();
-  updatePropertyDisplay();
 }
 
 function upgradeProperty(level) {
   const player = gameState.players[gameState.currentPlayer];
-  const positionIndex = player.position;
-  const cost = level * 50;
+  const positionIndex = parseInt(document.querySelector('[data-position]').dataset.position);
+  const cost = 50 * level;
   
-  if (player.money >= cost) {
+  if (player.money >= cost && player.properties[positionIndex]) {
     player.money -= cost;
     player.properties[positionIndex].level = level;
     
     showMessage(`Upgraded to Level ${level}!`);
-    closePurchasePanel();
     updateDisplay();
-    updatePropertyDisplay();
-    
-    gameState.waitingForPlayer = false;
-    setTimeout(nextTurn, 1500);
-  } else {
-    showMessage('Not enough money!');
+    closePurchasePanel();
   }
 }
 
 function upgradePropertyCPU(positionIndex, level) {
-  const player = gameState.players[1]; // CPU
-  const cost = level * 50;
+  const player = gameState.players[1]; // CPU is player 1
+  const cost = 50 * level;
   
-  player.money -= cost;
-  player.properties[positionIndex].level = level;
-  
-  updateDisplay();
-  updatePropertyDisplay();
+  if (player.money >= cost && player.properties[positionIndex]) {
+    player.money -= cost;
+    player.properties[positionIndex].level = level;
+  }
 }
 
 function buildHotel() {
   const player = gameState.players[gameState.currentPlayer];
-  const positionIndex = player.position;
+  const positionIndex = parseInt(document.querySelector('[data-position]').dataset.position);
   const cost = 300;
   
-  if (player.money >= cost && player.properties[positionIndex].level === 4) {
+  if (player.money >= cost && player.properties[positionIndex] && player.properties[positionIndex].level >= 4) {
     player.money -= cost;
     player.properties[positionIndex].hotel = true;
     
-    showMessage('Hotel built!');
-    closePurchasePanel();
+    showMessage(`Built a Hotel!`);
     updateDisplay();
-    updatePropertyDisplay();
-    
-    gameState.waitingForPlayer = false;
-    setTimeout(nextTurn, 1500);
-  } else {
-    showMessage('Need Level 4 property and $300!');
+    closePurchasePanel();
   }
 }
 
 function purchaseFromOpponent() {
   const player = gameState.players[gameState.currentPlayer];
-  const positionIndex = player.position;
+  const positionIndex = parseInt(document.querySelector('[data-position]').dataset.position);
   const position = boardPositions[positionIndex];
   const cost = Math.floor(position.price * 1.5);
   const propertyData = getPropertyData(positionIndex);
   
-  if (player.money >= cost) {
+  if (player.money >= cost && propertyData.owner !== undefined) {
     player.money -= cost;
+    gameState.players[propertyData.owner].money += cost;
     
-    // Remove from opponent
+    // Transfer property
     delete gameState.players[propertyData.owner].properties[positionIndex];
-    
-    // Add to current player
     player.properties[positionIndex] = {
       owner: gameState.currentPlayer,
-      level: 0,
-      hotel: false
+      level: propertyData.level,
+      hotel: propertyData.hotel
     };
     
     showMessage(`Bought ${position.name} from opponent for $${cost}!`);
-    closePurchasePanel();
     updateDisplay();
-    updatePropertyDisplay();
-    
-    gameState.waitingForPlayer = false;
-    setTimeout(nextTurn, 1500);
+    closePurchasePanel();
+  }
+}
+
+function showJailPanel() {
+  document.getElementById('jailPanel').style.display = 'block';
+}
+
+function payJailFine() {
+  const player = gameState.players[gameState.currentPlayer];
+  if (player.money >= 50) {
+    player.money -= 50;
+    player.inJail = false;
+    player.jailTurns = 0;
+    showMessage(`${player.name} paid $50 and is free!`);
+    document.getElementById('jailPanel').style.display = 'none';
+    updateDisplay();
+    nextTurn();
   } else {
     showMessage('Not enough money!');
   }
 }
 
-function skipPurchase() {
-  closePurchasePanel();
-  gameState.waitingForPlayer = false;
-  setTimeout(nextTurn, 500);
-}
-
-function closePurchasePanel() {
-  document.getElementById('purchasePanel').style.display = 'none';
-}
-
-function showJailPanel() {
+function tryJailRoll() {
+  const dice1Value = Math.floor(Math.random() * 6) + 1;
+  const dice2Value = Math.floor(Math.random() * 6) + 1;
+  
+  document.getElementById('dice1').textContent = dice1Value;
+  document.getElementById('dice2').textContent = dice2Value;
+  
   const player = gameState.players[gameState.currentPlayer];
   
-  if (gameState.currentPlayer === 0) {
-    // Human player
-    document.getElementById('jailText').textContent = `You are in jail! (Turn ${player.jailTurns + 1}/3)`;
-    document.getElementById('jailPanel').style.display = 'block';
-  } else {
-    // CPU auto-decides
-    if (player.money >= 50 && Math.random() > 0.3) {
-      payJailFineCPU();
-    } else {
-      tryJailRollCPU();
-    }
-  }
-}
-
-function payJailFine() {
-  const player = gameState.players[gameState.currentPlayer];
-  
-  if (player.money >= 50) {
-    player.money -= 50;
+  if (dice1Value === dice2Value) {
+    // Doubles! Free from jail
     player.inJail = false;
     player.jailTurns = 0;
-    
+    showMessage(`${player.name} rolled doubles and is free!`);
     document.getElementById('jailPanel').style.display = 'none';
-    showMessage('Paid jail fine! You are free!');
     
-    updateDisplay();
-    setTimeout(() => {
-      gameState.canRoll = true;
-      document.getElementById('rollBtn').disabled = false;
-    }, 1500);
-  } else {
-    showMessage('Not enough money for fine!');
-  }
-}
-
-function payJailFineCPU() {
-  const player = gameState.players[1];
-  
-  player.money -= 50;
-  player.inJail = false;
-  player.jailTurns = 0;
-  
-  showMessage('CPU paid jail fine and is free!');
-  updateDisplay();
-  
-  setTimeout(() => {
-    rollDice(); // CPU continues turn
-  }, 1500);
-}
-
-async function tryJailRoll() {
-  document.getElementById('jailPanel').style.display = 'none';
-  
-  const player = gameState.players[gameState.currentPlayer];
-  const dice1 = Math.floor(Math.random() * 6) + 1;
-  const dice2 = Math.floor(Math.random() * 6) + 1;
-  
-  document.getElementById('dice1').textContent = dice1;
-  document.getElementById('dice2').textContent = dice2;
-  
-  if (dice1 === dice2) {
-    // Rolled doubles - free!
-    player.inJail = false;
-    player.jailTurns = 0;
-    showMessage(`Rolled doubles (${dice1}-${dice2})! You are free!`);
-    
-    await sleep(1500);
-    await movePlayer(gameState.currentPlayer, dice1 + dice2);
-    await handleLanding();
-    
-    if (!gameState.waitingForPlayer) {
-      nextTurn();
-    }
-  } else {
-    // Failed to roll doubles
-    player.jailTurns++;
-    
-    if (player.jailTurns >= 3) {
-      // Must pay fine
-      if (player.money >= 50) {
-        player.money -= 50;
-        player.inJail = false;
-        player.jailTurns = 0;
-        showMessage('3 turns in jail! Forced to pay $50 fine.');
-        
-        await sleep(1500);
-        await movePlayer(gameState.currentPlayer, dice1 + dice2);
-        await handleLanding();
-        
-        if (!gameState.waitingForPlayer) {
-          nextTurn();
-        }
-      } else {
-        showMessage('Cannot pay jail fine! Game Over!');
-        player.bankrupt = true;
+    // Move player
+    setTimeout(async () => {
+      await movePlayer(gameState.currentPlayer, dice1Value + dice2Value);
+      await handleLanding();
+      if (!gameState.waitingForPlayer) {
         nextTurn();
       }
-    } else {
-      showMessage(`Failed to roll doubles. Stay in jail. (${player.jailTurns}/3)`);
-      setTimeout(nextTurn, 2000);
-    }
-  }
-  
-  updateDisplay();
-}
-
-async function tryJailRollCPU() {
-  const player = gameState.players[1];
-  const dice1 = Math.floor(Math.random() * 6) + 1;
-  const dice2 = Math.floor(Math.random() * 6) + 1;
-  
-  if (dice1 === dice2) {
-    player.inJail = false;
-    player.jailTurns = 0;
-    showMessage(`CPU rolled doubles (${dice1}-${dice2}) and is free!`);
-    
-    await sleep(1500);
-    await movePlayer(1, dice1 + dice2);
-    await handleLanding();
-    
-    if (!gameState.waitingForPlayer) {
-      nextTurn();
-    }
+    }, 1000);
   } else {
     player.jailTurns++;
-    
     if (player.jailTurns >= 3) {
-      if (player.money >= 50) {
-        player.money -= 50;
-        player.inJail = false;
-        player.jailTurns = 0;
-        showMessage('CPU forced to pay jail fine after 3 turns.');
-        
-        await sleep(1500);
-        await movePlayer(1, dice1 + dice2);
-        await handleLanding();
-        
-        if (!gameState.waitingForPlayer) {
-          nextTurn();
-        }
-      } else {
-        showMessage('CPU cannot pay jail fine! CPU loses!');
-        player.bankrupt = true;
-        nextTurn();
-      }
+      // Must pay after 3 turns
+      showMessage('3 turns in jail! Must pay $50!');
+      setTimeout(() => {
+        payJailFine();
+      }, 1500);
     } else {
-      showMessage(`CPU failed to escape jail. (${player.jailTurns}/3)`);
-      setTimeout(nextTurn, 2000);
+      showMessage(`No doubles. ${3 - player.jailTurns} turns left.`);
+      document.getElementById('jailPanel').style.display = 'none';
+      nextTurn();
     }
   }
   
@@ -1452,74 +1471,23 @@ async function tryJailRollCPU() {
 }
 
 function nextTurn() {
-  // Check for win condition
-  if (gameState.players[0].bankrupt) {
-    showMessage('CPU Wins! You went bankrupt!');
-    return;
-  }
-  if (gameState.players[1].bankrupt) {
-    showMessage('You Win! CPU went bankrupt!');
-    return;
-  }
-  
-  // Switch turns
   gameState.currentPlayer = (gameState.currentPlayer + 1) % 2;
   gameState.canRoll = true;
-  
-  // Update UI
   document.getElementById('rollBtn').disabled = false;
+  
   updateDisplay();
   updateGameInfo();
   
   // CPU turn
-  if (gameState.currentPlayer === 1 && !gameState.waitingForPlayer) {
+  if (gameState.currentPlayer === 1 && !gameState.players[1].bankrupt) {
     setTimeout(() => {
       rollDice();
-    }, 2000);
+    }, 1500);
   }
-}
-
-function updateDisplay() {
-  // Update player panels
-  document.getElementById('playerMoney').textContent = gameState.players[0].money;
-  document.getElementById('cpuMoney').textContent = gameState.players[1].money;
-  
-  // Count properties
-  const playerProps = Object.keys(gameState.players[0].properties).length;
-  const cpuProps = Object.keys(gameState.players[1].properties).length;
-  
-  document.getElementById('playerProps').textContent = playerProps;
-  document.getElementById('cpuProps').textContent = cpuProps;
-  
-  // Update active player
-  document.getElementById('playerPanel').classList.toggle('active', gameState.currentPlayer === 0);
-  document.getElementById('cpuPanel').classList.toggle('active', gameState.currentPlayer === 1);
-}
-
-function updateGameInfo() {
-  const current = gameState.players[gameState.currentPlayer];
-  let info = `${current.name}'s Turn`;
-  
-  if (current.inJail) {
-    info += ` - In Jail (${current.jailTurns}/3)`;
-  } else {
-    info += ' - Roll the Dice!';
-  }
-  
-  document.getElementById('gameInfo').textContent = info;
-}
-
-function showMessage(text) {
-  document.getElementById('messageBox').textContent = text;
-  document.getElementById('messageBox').style.display = 'block';
-  
-  setTimeout(() => {
-    document.getElementById('messageBox').style.display = 'none';
-  }, 3000);
 }
 
 function showRules() {
-  showMessage('Roll dice to move around the board. Buy properties and upgrade them to collect rent from opponents!');
+  showMessage('Roll dice to move around the board. Buy properties and charge rent. First to bankrupt the opponent wins!');
 }
 
 function exitGame() {
@@ -1528,9 +1496,10 @@ function exitGame() {
   }
 }
 
-// Initialize
-updateDisplay();
-updateGameInfo();
+// Initialize on load
+window.addEventListener('load', () => {
+  updateDisplay();
+});
 </script>
 </body>
 </html>
