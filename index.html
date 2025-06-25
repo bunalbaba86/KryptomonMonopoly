@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kryptomon Monopoly - Mobile Edition</title>
+<title>Kryptomon Monopoly - Perfect Edition</title>
 <style>
 * {
   margin: 0;
@@ -81,76 +81,6 @@ h1 {
   align-items: center;
   gap: 20px;
   max-width: 100%;
-}
-
-/* Player Info Section - Center Top */
-.player-info-section {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  max-width: 600px;
-  padding: 15px;
-  background: linear-gradient(145deg, rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9));
-  border-radius: 25px;
-  border: 3px solid rgba(0, 245, 255, 0.3);
-  backdrop-filter: blur(15px);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-}
-
-.player-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 15px;
-  border-radius: 20px;
-  transition: all 0.5s ease;
-  min-width: 140px;
-  background: rgba(26, 26, 46, 0.5);
-  border: 2px solid rgba(0, 245, 255, 0.2);
-}
-
-.player-info.active {
-  border-color: #00f5ff;
-  box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
-  transform: scale(1.05);
-}
-
-.player-avatar {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 3px solid #00f5ff;
-  background-size: cover;
-  background-position: center;
-  margin-bottom: 10px;
-  box-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
-}
-
-.player-avatar.player { background-image: url('character.png'); }
-.player-avatar.cpu { background-image: url('character2.png'); }
-
-.player-name {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: #00f5ff;
-  text-align: center;
-}
-
-.player-money {
-  font-size: 18px;
-  color: #2ed573;
-  margin-bottom: 5px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.player-properties {
-  font-size: 12px;
-  color: #ccc;
-  text-align: center;
 }
 
 /* Game Board */
@@ -305,7 +235,7 @@ h1 {
   border-color: #8b008b;
 }
 
-/* Dice Section */
+/* Dice Section with Player Info */
 .dice-section {
   display: flex;
   gap: 15px;
@@ -318,7 +248,74 @@ h1 {
   backdrop-filter: blur(10px);
   border: 2px solid rgba(0, 245, 255, 0.3);
   width: 100%;
-  max-width: 400px;
+  max-width: 600px;
+}
+
+/* Player Info - Left and Right of Dice */
+.player-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  border-radius: 15px;
+  transition: all 0.5s ease;
+  min-width: 120px;
+  background: rgba(26, 26, 46, 0.5);
+  border: 2px solid rgba(0, 245, 255, 0.2);
+}
+
+.player-info.active {
+  border-color: #00f5ff;
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+  transform: scale(1.05);
+}
+
+.player-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid #00f5ff;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 8px;
+  box-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
+}
+
+.player-avatar.player { background-image: url('character.png'); }
+.player-avatar.cpu { background-image: url('character2.png'); }
+
+.player-name {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #00f5ff;
+  text-align: center;
+}
+
+.player-money {
+  font-size: 16px;
+  color: #2ed573;
+  margin-bottom: 3px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.player-properties {
+  font-size: 10px;
+  color: #ccc;
+  text-align: center;
+}
+
+.dice-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.dice-container {
+  display: flex;
+  gap: 10px;
 }
 
 .dice {
@@ -591,24 +588,18 @@ h1 {
     padding: 5px;
   }
   
-  .player-info-section {
-    flex-direction: column;
-    gap: 15px;
+  .dice-section {
     padding: 10px;
+    gap: 8px;
   }
   
   .player-info {
-    min-width: 120px;
-    padding: 10px;
+    min-width: 100px;
+    padding: 8px;
   }
   
   .board {
     margin-bottom: 15px;
-  }
-  
-  .dice-section {
-    padding: 10px;
-    gap: 10px;
   }
   
   .upgrade-options {
@@ -623,21 +614,20 @@ h1 {
 }
 
 @media (max-width: 480px) {
-  .player-info-section {
-    gap: 10px;
+  .dice-section {
+    gap: 5px;
   }
   
   .player-info {
-    min-width: 100px;
-    padding: 8px;
+    min-width: 80px;
+    padding: 6px;
   }
   
   .upgrade-options {
     grid-template-columns: 1fr;
   }
   
-  .dice-section {
-    flex-direction: column;
+  .dice-area {
     gap: 8px;
   }
 }
@@ -658,31 +648,36 @@ h1 {
   <!-- Game Screen -->
   <div id="game" class="game-container">
     <div class="game-layout">
-      <!-- Player Info Section - Center Top -->
-      <div class="player-info-section">
-        <div id="playerInfo" class="player-info">
-          <div class="player-avatar player"></div>
-          <div class="player-name">👤 YOU</div>
-          <div class="player-money">💰 $<span id="playerMoney">1500</span></div>
-          <div class="player-properties">Properties: <span id="playerProps">0</span></div>
-        </div>
-        
-        <div id="cpuInfo" class="player-info">
-          <div class="player-avatar cpu"></div>
-          <div class="player-name">🤖 CPU</div>
-          <div class="player-money">💰 $<span id="cpuMoney">1500</span></div>
-          <div class="player-properties">Properties: <span id="cpuProps">0</span></div>
-        </div>
-      </div>
-
       <!-- Game Board -->
       <div class="board-container">
         <div id="board" class="board"></div>
         
+        <!-- Dice Section with Player Info -->
         <div class="dice-section">
-          <div id="dice1" class="dice">1</div>
-          <div id="dice2" class="dice">1</div>
-          <button id="rollBtn" class="roll-btn" onclick="rollDice()">🎲 ROLL</button>
+          <!-- Left Player Info -->
+          <div id="playerInfo" class="player-info">
+            <div class="player-avatar player"></div>
+            <div class="player-name">👤 YOU</div>
+            <div class="player-money">💰 $<span id="playerMoney">1500</span></div>
+            <div class="player-properties">Props: <span id="playerProps">0</span></div>
+          </div>
+          
+          <!-- Dice Area -->
+          <div class="dice-area">
+            <div class="dice-container">
+              <div id="dice1" class="dice">1</div>
+              <div id="dice2" class="dice">1</div>
+            </div>
+            <button id="rollBtn" class="roll-btn" onclick="rollDice()">🎲 ROLL</button>
+          </div>
+          
+          <!-- Right Player Info -->
+          <div id="cpuInfo" class="player-info">
+            <div class="player-avatar cpu"></div>
+            <div class="player-name">🤖 CPU</div>
+            <div class="player-money">💰 $<span id="cpuMoney">1500</span></div>
+            <div class="player-properties">Props: <span id="cpuProps">0</span></div>
+          </div>
         </div>
 
         <div id="gameInfo" class="game-info">Your Turn - Roll the Dice!</div>
@@ -763,7 +758,8 @@ let gameState = {
   gameStarted: false,
   canRoll: true,
   lastRoll: [0, 0],
-  waitingForPlayer: false
+  waitingForPlayer: false,
+  currentPropertyIndex: -1
 };
 
 // Perfect 5x5 square board (16 positions)
@@ -862,16 +858,6 @@ function getBoardIndex(gridIndex) {
   };
   
   return gridToBoardMap[gridIndex] || -1;
-}
-
-function getGridPosition(boardPosition) {
-  const boardToGridMap = {
-    0: 0, 1: 1, 2: 2, 3: 3, 4: 4,
-    5: 9, 6: 14, 7: 19,
-    8: 24, 9: 23, 10: 22, 11: 21,
-    12: 20, 13: 15, 14: 10, 15: 5
-  };
-  return boardToGridMap[boardPosition] || -1;
 }
 
 function updateTokens() {
@@ -1042,7 +1028,8 @@ function resetGame() {
     gameStarted: false,
     canRoll: true,
     lastRoll: [0, 0],
-    waitingForPlayer: false
+    waitingForPlayer: false,
+    currentPropertyIndex: -1
   };
 }
 
@@ -1142,6 +1129,7 @@ async function handleLanding() {
 }
 
 async function handlePropertyLanding(player, positionIndex, position) {
+  gameState.currentPropertyIndex = positionIndex;
   const propertyData = getPropertyData(positionIndex);
   
   if (propertyData.owner === undefined) {
@@ -1204,7 +1192,7 @@ async function handleChanceLanding() {
     };
   });
   
-  // Apply effect (reduced amounts)
+  // Apply effect - halved rewards
   switch (card.effect) {
     case 'jailFree':
       player.jailFreeCard = true;
@@ -1230,19 +1218,16 @@ async function handleChanceLanding() {
       player.money += 50;
       break;
   }
-  
-  updateDisplay();
 }
 
-function showPurchasePanel(positionIndex, position, isAvailable) {
-  const panel = document.getElementById('purchasePanel');
+function showPurchasePanel(positionIndex, position, canBuy) {
   const propertyData = getPropertyData(positionIndex);
   
   document.getElementById('propertyName').textContent = position.name;
   document.getElementById('propertyPrice').textContent = position.price;
   document.getElementById('currentRentDisplay').textContent = calculateRent(positionIndex);
   
-  // Calculate rent values for each level
+  // Calculate rent for each level
   const baseRent = position.baseRent;
   document.getElementById('rent1').textContent = baseRent * 2;
   document.getElementById('rent2').textContent = baseRent * 3;
@@ -1250,90 +1235,139 @@ function showPurchasePanel(positionIndex, position, isAvailable) {
   document.getElementById('rent4').textContent = baseRent * 5;
   document.getElementById('rentHotel').textContent = baseRent * 8;
   
-  const upgradeOptions = document.getElementById('upgradeOptions');
   const buyBtn = document.getElementById('buyBtn');
   const purchaseFromOpponent = document.getElementById('purchaseFromOpponent');
   
-  // Hide all buttons first
-  Array.from(upgradeOptions.children).forEach(btn => btn.style.display = 'none');
-  
-  if (isAvailable) {
-    // Show buy button
+  if (canBuy && propertyData.owner === undefined) {
+    // Available for purchase
     buyBtn.style.display = 'block';
-    document.getElementById('buyPrice').textContent = position.price;
     buyBtn.disabled = gameState.players[gameState.currentPlayer].money < position.price;
-  } else if (propertyData.owner === gameState.currentPlayer) {
-    // Show upgrade options for owned property
-    const currentLevel = propertyData.level || 0;
-    const hasHotel = propertyData.hotel || false;
-    const currentMoney = gameState.players[gameState.currentPlayer].money;
-    
-    if (!hasHotel) {
-      // Show level upgrade buttons
-      for (let level = 1; level <= 4; level++) {
-        const btn = upgradeOptions.children[level];
-        btn.style.display = 'block';
-        
-        if (level <= currentLevel) {
-          btn.disabled = true;
-          btn.style.opacity = '0.3';
-        } else if (level === currentLevel + 1) {
-          btn.disabled = currentMoney < 50 * level;
-        } else {
-          btn.disabled = true;
-          btn.style.opacity = '0.5';
-        }
-      }
-      
-      // Show hotel button if level 4
-      if (currentLevel >= 4) {
-        const hotelBtn = upgradeOptions.children[5];
-        hotelBtn.style.display = 'block';
-        hotelBtn.disabled = currentMoney < 300;
-      }
-    }
-  } else {
-    // Show purchase from opponent option
+    document.getElementById('buyPrice').textContent = position.price;
+    purchaseFromOpponent.style.display = 'none';
+  } else if (propertyData.owner !== undefined && propertyData.owner !== gameState.currentPlayer) {
+    // Owned by opponent - show purchase option
+    buyBtn.style.display = 'none';
     purchaseFromOpponent.style.display = 'block';
-    const opponentPrice = Math.floor(position.price * 1.5);
+    const opponentPrice = position.price * 2;
     document.getElementById('opponentPrice').textContent = opponentPrice;
     purchaseFromOpponent.disabled = gameState.players[gameState.currentPlayer].money < opponentPrice;
+  } else {
+    // Own property
+    buyBtn.style.display = 'none';
+    purchaseFromOpponent.style.display = 'none';
   }
   
-  panel.style.display = 'block';
+  // Setup upgrade buttons
+  setupUpgradeButtons(positionIndex, propertyData);
+  
+  document.getElementById('purchasePanel').style.display = 'block';
 }
 
-function closePurchasePanel() {
-  document.getElementById('purchasePanel').style.display = 'none';
-  gameState.waitingForPlayer = false;
-  nextTurn();
-}
-
-function skipPurchase() {
-  closePurchasePanel();
+function setupUpgradeButtons(positionIndex, propertyData) {
+  const player = gameState.players[gameState.currentPlayer];
+  const upgradeButtons = document.querySelectorAll('[onclick^="upgradeProperty"]');
+  const hotelButton = document.querySelector('[onclick="buildHotel()"]');
+  
+  // Only show upgrade options if player owns the property
+  const ownsProperty = propertyData.owner === gameState.currentPlayer;
+  
+  upgradeButtons.forEach((btn, index) => {
+    const level = index + 1;
+    const cost = level * 50;
+    
+    if (ownsProperty && !propertyData.hotel) {
+      btn.style.display = 'block';
+      btn.disabled = player.money < cost || propertyData.level >= level;
+    } else {
+      btn.style.display = 'none';
+    }
+  });
+  
+  // Hotel button
+  if (ownsProperty && propertyData.level >= 4 && !propertyData.hotel) {
+    hotelButton.style.display = 'block';
+    hotelButton.disabled = player.money < 300;
+  } else {
+    hotelButton.style.display = 'none';
+  }
 }
 
 function buyProperty() {
   const player = gameState.players[gameState.currentPlayer];
-  const positionIndex = parseInt(document.querySelector('[data-position]').dataset.position);
-  const position = boardPositions[positionIndex];
+  const position = boardPositions[gameState.currentPropertyIndex];
   
   if (player.money >= position.price) {
     player.money -= position.price;
-    player.properties[positionIndex] = {
+    player.properties[gameState.currentPropertyIndex] = {
       owner: gameState.currentPlayer,
       level: 0,
       hotel: false
     };
     
     showMessage(`You bought ${position.name} for $${position.price}!`);
-    updateDisplay();
+    closePurchasePanel();
+  }
+}
+
+function upgradeProperty(level) {
+  const player = gameState.players[gameState.currentPlayer];
+  const propertyData = getPropertyData(gameState.currentPropertyIndex);
+  const cost = level * 50;
+  
+  if (player.money >= cost && propertyData.owner === gameState.currentPlayer && propertyData.level < level) {
+    player.money -= cost;
+    player.properties[gameState.currentPropertyIndex].level = level;
+    
+    const position = boardPositions[gameState.currentPropertyIndex];
+    showMessage(`Upgraded ${position.name} to Level ${level}!`);
+    
+    // Refresh the panel to update buttons
+    showPurchasePanel(gameState.currentPropertyIndex, position, false);
+  }
+}
+
+function buildHotel() {
+  const player = gameState.players[gameState.currentPlayer];
+  const propertyData = getPropertyData(gameState.currentPropertyIndex);
+  const cost = 300;
+  
+  if (player.money >= cost && propertyData.owner === gameState.currentPlayer && propertyData.level >= 4 && !propertyData.hotel) {
+    player.money -= cost;
+    player.properties[gameState.currentPropertyIndex].hotel = true;
+    
+    const position = boardPositions[gameState.currentPropertyIndex];
+    showMessage(`Built hotel on ${position.name}!`);
+    closePurchasePanel();
+  }
+}
+
+function purchaseFromOpponent() {
+  const player = gameState.players[gameState.currentPlayer];
+  const position = boardPositions[gameState.currentPropertyIndex];
+  const propertyData = getPropertyData(gameState.currentPropertyIndex);
+  const cost = position.price * 2;
+  
+  if (player.money >= cost && propertyData.owner !== gameState.currentPlayer) {
+    player.money -= cost;
+    
+    // Transfer property
+    delete gameState.players[propertyData.owner].properties[gameState.currentPropertyIndex];
+    player.properties[gameState.currentPropertyIndex] = {
+      owner: gameState.currentPlayer,
+      level: propertyData.level,
+      hotel: propertyData.hotel
+    };
+    
+    // Pay opponent
+    gameState.players[propertyData.owner].money += cost;
+    
+    showMessage(`You bought ${position.name} from opponent for $${cost}!`);
     closePurchasePanel();
   }
 }
 
 function buyPropertyCPU(positionIndex) {
-  const player = gameState.players[1]; // CPU is player 1
+  const player = gameState.players[1]; // CPU
   const position = boardPositions[positionIndex];
   
   player.money -= position.price;
@@ -1344,133 +1378,35 @@ function buyPropertyCPU(positionIndex) {
   };
 }
 
-function upgradeProperty(level) {
-  const player = gameState.players[gameState.currentPlayer];
-  const positionIndex = parseInt(document.querySelector('[data-position]').dataset.position);
-  const cost = 50 * level;
-  
-  if (player.money >= cost && player.properties[positionIndex]) {
-    player.money -= cost;
-    player.properties[positionIndex].level = level;
-    
-    showMessage(`Upgraded to Level ${level}!`);
-    updateDisplay();
-    closePurchasePanel();
-  }
-}
-
 function upgradePropertyCPU(positionIndex, level) {
-  const player = gameState.players[1]; // CPU is player 1
-  const cost = 50 * level;
+  const player = gameState.players[1]; // CPU
+  const cost = level * 50;
   
-  if (player.money >= cost && player.properties[positionIndex]) {
-    player.money -= cost;
-    player.properties[positionIndex].level = level;
-  }
+  player.money -= cost;
+  player.properties[positionIndex].level = level;
 }
 
-function buildHotel() {
-  const player = gameState.players[gameState.currentPlayer];
-  const positionIndex = parseInt(document.querySelector('[data-position]').dataset.position);
-  const cost = 300;
-  
-  if (player.money >= cost && player.properties[positionIndex] && player.properties[positionIndex].level >= 4) {
-    player.money -= cost;
-    player.properties[positionIndex].hotel = true;
-    
-    showMessage(`Built a Hotel!`);
-    updateDisplay();
-    closePurchasePanel();
-  }
+function skipPurchase() {
+  closePurchasePanel();
 }
 
-function purchaseFromOpponent() {
-  const player = gameState.players[gameState.currentPlayer];
-  const positionIndex = parseInt(document.querySelector('[data-position]').dataset.position);
-  const position = boardPositions[positionIndex];
-  const cost = Math.floor(position.price * 1.5);
-  const propertyData = getPropertyData(positionIndex);
-  
-  if (player.money >= cost && propertyData.owner !== undefined) {
-    player.money -= cost;
-    gameState.players[propertyData.owner].money += cost;
-    
-    // Transfer property
-    delete gameState.players[propertyData.owner].properties[positionIndex];
-    player.properties[positionIndex] = {
-      owner: gameState.currentPlayer,
-      level: propertyData.level,
-      hotel: propertyData.hotel
-    };
-    
-    showMessage(`Bought ${position.name} from opponent for $${cost}!`);
-    updateDisplay();
-    closePurchasePanel();
-  }
-}
-
-function showJailPanel() {
-  document.getElementById('jailPanel').style.display = 'block';
-}
-
-function payJailFine() {
-  const player = gameState.players[gameState.currentPlayer];
-  if (player.money >= 50) {
-    player.money -= 50;
-    player.inJail = false;
-    player.jailTurns = 0;
-    showMessage(`${player.name} paid $50 and is free!`);
-    document.getElementById('jailPanel').style.display = 'none';
-    updateDisplay();
-    nextTurn();
-  } else {
-    showMessage('Not enough money!');
-  }
-}
-
-function tryJailRoll() {
-  const dice1Value = Math.floor(Math.random() * 6) + 1;
-  const dice2Value = Math.floor(Math.random() * 6) + 1;
-  
-  document.getElementById('dice1').textContent = dice1Value;
-  document.getElementById('dice2').textContent = dice2Value;
-  
-  const player = gameState.players[gameState.currentPlayer];
-  
-  if (dice1Value === dice2Value) {
-    // Doubles! Free from jail
-    player.inJail = false;
-    player.jailTurns = 0;
-    showMessage(`${player.name} rolled doubles and is free!`);
-    document.getElementById('jailPanel').style.display = 'none';
-    
-    // Move player
-    setTimeout(async () => {
-      await movePlayer(gameState.currentPlayer, dice1Value + dice2Value);
-      await handleLanding();
-      if (!gameState.waitingForPlayer) {
-        nextTurn();
-      }
-    }, 1000);
-  } else {
-    player.jailTurns++;
-    if (player.jailTurns >= 3) {
-      // Must pay after 3 turns
-      showMessage('3 turns in jail! Must pay $50!');
-      setTimeout(() => {
-        payJailFine();
-      }, 1500);
-    } else {
-      showMessage(`No doubles. ${3 - player.jailTurns} turns left.`);
-      document.getElementById('jailPanel').style.display = 'none';
-      nextTurn();
-    }
-  }
-  
-  updateDisplay();
+function closePurchasePanel() {
+  document.getElementById('purchasePanel').style.display = 'none';
+  gameState.waitingForPlayer = false;
+  gameState.currentPropertyIndex = -1;
+  nextTurn();
 }
 
 function nextTurn() {
+  // Check if game should continue
+  if (gameState.players[0].bankrupt) {
+    showMessage('Game Over! CPU Wins!');
+    return;
+  } else if (gameState.players[1].bankrupt) {
+    showMessage('Congratulations! You Win!');
+    return;
+  }
+  
   gameState.currentPlayer = (gameState.currentPlayer + 1) % 2;
   gameState.canRoll = true;
   document.getElementById('rollBtn').disabled = false;
@@ -1479,27 +1415,115 @@ function nextTurn() {
   updateGameInfo();
   
   // CPU turn
-  if (gameState.currentPlayer === 1 && !gameState.players[1].bankrupt) {
-    setTimeout(() => {
-      rollDice();
+  if (gameState.currentPlayer === 1) {
+    setTimeout(async () => {
+      await rollDice();
     }, 1500);
   }
 }
 
-function showRules() {
-  showMessage('Roll dice to move around the board. Buy properties and charge rent. First to bankrupt the opponent wins!');
+function showJailPanel() {
+  const player = gameState.players[gameState.currentPlayer];
+  document.getElementById('jailText').textContent = 
+    `${player.name} is in jail! (Turn ${player.jailTurns + 1}/3)`;
+  document.getElementById('jailPanel').style.display = 'block';
 }
 
-function exitGame() {
-  if (confirm('Are you sure you want to exit?')) {
-    window.close();
+function payJailFine() {
+  const player = gameState.players[gameState.currentPlayer];
+  
+  if (player.money >= 50) {
+    player.money -= 50;
+    player.inJail = false;
+    player.jailTurns = 0;
+    showMessage(`${player.name} paid $50 and is free!`);
+    document.getElementById('jailPanel').style.display = 'none';
+    
+    gameState.canRoll = true;
+    document.getElementById('rollBtn').disabled = false;
+    updateDisplay();
+  } else {
+    showMessage('Not enough money to pay fine!');
   }
 }
 
-// Initialize on load
-window.addEventListener('load', () => {
+async function tryJailRoll() {
+  document.getElementById('jailPanel').style.display = 'none';
+  
+  const dice1 = document.getElementById('dice1');
+  const dice2 = document.getElementById('dice2');
+  
+  dice1.classList.add('rolling');
+  dice2.classList.add('rolling');
+  
+  let d1, d2;
+  for (let i = 0; i < 8; i++) {
+    d1 = Math.floor(Math.random() * 6) + 1;
+    d2 = Math.floor(Math.random() * 6) + 1;
+    dice1.textContent = d1;
+    dice2.textContent = d2;
+    await sleep(100);
+  }
+  
+  dice1.classList.remove('rolling');
+  dice2.classList.remove('rolling');
+  
+  const player = gameState.players[gameState.currentPlayer];
+  
+  // Check for exact doubles (1-1, 2-2, etc.)
+  if (d1 === d2) {
+    player.inJail = false;
+    player.jailTurns = 0;
+    showMessage(`${player.name} rolled doubles ${d1}-${d2} and is free!`);
+    
+    await sleep(1500);
+    await movePlayer(gameState.currentPlayer, d1 + d2);
+    await handleLanding();
+    
+    if (!gameState.waitingForPlayer) {
+      nextTurn();
+    }
+  } else {
+    player.jailTurns++;
+    if (player.jailTurns >= 3) {
+      // Force pay fine after 3 turns
+      if (player.money >= 50) {
+        player.money -= 50;
+        player.inJail = false;
+        player.jailTurns = 0;
+        showMessage(`${player.name} was forced to pay $50 after 3 turns!`);
+        
+        await sleep(1500);
+        await movePlayer(gameState.currentPlayer, d1 + d2);
+        await handleLanding();
+      } else {
+        showMessage(`${player.name} is bankrupt!`);
+        player.bankrupt = true;
+      }
+    } else {
+      showMessage(`${player.name} rolled ${d1}-${d2}, no doubles. Still in jail.`);
+    }
+    
+    if (!gameState.waitingForPlayer) {
+      nextTurn();
+    }
+  }
+  
   updateDisplay();
-});
+}
+
+function showRules() {
+  showMessage('Roll dice to move. Buy properties, upgrade them, and collect rent from opponents!');
+}
+
+function exitGame() {
+  window.close();
+}
+
+// Initialize game on load
+window.onload = function() {
+  // Game will start from menu
+};
 </script>
 </body>
 </html>
