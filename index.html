@@ -1,2264 +1,497 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Business Kryptomon</title>
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-  color: #fff;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-.container {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 10px;
-}
-
-h1 {
-  text-align: center;
-  color: #00f5ff;
-  font-size: clamp(1.5rem, 5vw, 3rem);
-  margin-bottom: 20px;
-  text-shadow: 0 0 30px #00f5ff;
-  animation: titleGlow 2s ease-in-out infinite alternate;
-  font-weight: 900;
-}
-
-@keyframes titleGlow {
-  from { text-shadow: 0 0 30px #00f5ff; }
-  to { text-shadow: 0 0 50px #00f5ff; }
-}
-
-/* Menu */
-.menu {
-  text-align: center;
-  padding: 60px 30px;
-  background: linear-gradient(145deg, rgba(26, 26, 46, 0.4), rgba(22, 33, 62, 0.4));
-  border-radius: 40px;
-  backdrop-filter: blur(15px);
-  border: 3px solid rgba(0, 245, 255, 0.4);
-  box-shadow: 0 20px 60px rgba(0, 245, 255, 0.2);
-}
-
-.menu button {
-  background: linear-gradient(45deg, #00f5ff, #0080ff);
-  border: none;
-  padding: 20px 40px;
-  margin: 15px;
-  font-size: 18px;
-  color: white;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.4s ease;
-  box-shadow: 0 10px 35px rgba(0, 245, 255, 0.4);
-  font-weight: bold;
-  min-width: 180px;
-}
-
-.menu button:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 20px 50px rgba(0, 245, 255, 0.6);
-}
-
-/* Game Layout */
-.game-container {
-  display: none;
-}
-
-.game-layout {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 25px;
-  max-width: 100%;
-}
-
-/* Game Board */
-.board-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.board {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  gap: 3px;
-  width: min(90vw, 520px);
-  height: min(90vw, 520px);
-  background: linear-gradient(45deg, #0f1419, #1a1a2e);
-  border: 5px solid #00f5ff;
-  border-radius: 20px;
-  padding: 12px;
-  box-shadow: 0 0 40px rgba(0, 245, 255, 0.7);
-  margin-bottom: 25px;
-  position: relative;
-}
-
-.cell {
-  background: linear-gradient(145deg, rgba(26, 26, 46, 0.95), rgba(22, 33, 62, 0.95));
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 5px;
-  position: relative;
-  border: 2px solid rgba(0, 245, 255, 0.3);
-  transition: all 0.3s ease;
-  backdrop-filter: blur(5px);
-}
-
-.cell.empty {
-  background: transparent;
-  border: none;
-}
-
-.cell:not(.empty):hover {
-  border-color: #00f5ff;
-  box-shadow: 0 0 20px rgba(0, 245, 255, 0.6);
-  transform: scale(1.02);
-}
-
-.cell-name {
-  font-size: clamp(8px, 2.2vw, 11px);
-  font-weight: bold;
-  text-align: center;
-  color: #fff;
-  line-height: 1.1;
-  margin-bottom: 4px;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-}
-
-.cell-rent {
-  background: linear-gradient(45deg, #00f5ff, #0080ff);
-  color: #000;
-  padding: 2px 5px;
-  border-radius: 5px;
-  font-size: clamp(7px, 1.8vw, 9px);
-  font-weight: bold;
-  margin-top: auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.cell-building {
-  font-size: clamp(10px, 2.5vw, 14px);
-  margin-top: 2px;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
-}
-
-.owner-tag {
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  padding: 2px 4px;
-  border-radius: 5px;
-  font-size: clamp(7px, 1.8vw, 9px);
-  font-weight: bold;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-.owner-player { 
-  background: linear-gradient(45deg, #ff4757, #ff6b6b); 
-  color: #fff; 
-  border: 1px solid #fff;
-}
-.owner-cpu { 
-  background: linear-gradient(45deg, #2ed573, #00ff41); 
-  color: #000; 
-  border: 1px solid #000;
-}
-
-.player-token {
-  position: absolute;
-  width: clamp(22px, 5.5vw, 28px);
-  height: clamp(22px, 5.5vw, 28px);
-  border-radius: 50%;
-  border: 3px solid #fff;
-  transition: all 0.8s ease;
-  z-index: 20;
-  background-size: cover;
-  background-position: center;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
-}
-
-.token-player {
-  background-image: url('kryptomon.png');
-  bottom: 4px;
-  left: 4px;
-  border-color: #00f5ff;
-  box-shadow: 0 0 15px rgba(0, 245, 255, 0.8);
-}
-
-.token-cpu {
-  background-image: url('kryptomon2.png');
-  bottom: 4px;
-  right: 4px;
-  border-color: #2ed573;
-  box-shadow: 0 0 15px rgba(46, 213, 115, 0.8);
-}
-
-/* START cell - TAMAMEN DÜZELTILDI */
-.cell.start {
-  background: linear-gradient(145deg, #32cd32, #228b22) !important;
-  color: #000 !important;
-  border: 4px solid #228b22 !important;
-  box-shadow: 0 0 30px rgba(50, 205, 50, 0.9) !important;
-  position: relative !important;
-}
-
-.cell.start .cell-name {
-  color: #000 !important;
-  font-size: clamp(10px, 2.8vw, 14px) !important;
-  font-weight: 900 !important;
-  text-shadow: 0 0 15px rgba(255, 255, 255, 1) !important;
-  background: rgba(255, 255, 255, 0.5) !important;
-  padding: 3px 6px !important;
-  border-radius: 6px !important;
-  border: 2px solid #228b22 !important;
-  margin-bottom: 5px !important;
-}
-
-.cell.start .player-token {
-  border-width: 4px !important;
-  box-shadow: 0 0 25px rgba(255, 255, 255, 1) !important;
-  z-index: 30 !important;
-}
-
-/* Other special cells */
-.cell.jail {
-  background: linear-gradient(145deg, #dc143c, #b22222);
-  color: #fff;
-  border-color: #b22222;
-  box-shadow: 0 0 20px rgba(220, 20, 60, 0.5);
-}
-
-.cell.tax {
-  background: linear-gradient(145deg, #ff69b4, #ff1493);
-  color: #fff;
-  border-color: #ff1493;
-  box-shadow: 0 0 20px rgba(255, 20, 147, 0.5);
-}
-
-.cell.chance {
-  background: linear-gradient(145deg, #9932cc, #8b008b);
-  color: #fff;
-  border-color: #8b008b;
-  box-shadow: 0 0 20px rgba(153, 50, 204, 0.5);
-}
-
-.cell.airport {
-  background: linear-gradient(145deg, #00ced1, #40e0d0);
-  color: #000;
-  border-color: #00ced1;
-  box-shadow: 0 0 20px rgba(0, 206, 209, 0.5);
-}
-
-/* Property Element Styling */
-.cell.fire {
-  background: linear-gradient(145deg, #ff4500, #ff6347) !important;
-  border-color: #ff4500 !important;
-  box-shadow: 0 0 15px rgba(255, 69, 0, 0.4) !important;
-}
-
-.cell.water {
-  background: linear-gradient(145deg, #1e90ff, #4169e1) !important;
-  border-color: #1e90ff !important;
-  box-shadow: 0 0 15px rgba(30, 144, 255, 0.4) !important;
-}
-
-.cell.earth {
-  background: linear-gradient(145deg, #8b4513, #a0522d) !important;
-  border-color: #8b4513 !important;
-  box-shadow: 0 0 15px rgba(139, 69, 19, 0.4) !important;
-}
-
-.cell.air {
-  background: linear-gradient(145deg, #87ceeb, #b0e0e6) !important;
-  border-color: #87ceeb !important;
-  box-shadow: 0 0 15px rgba(135, 206, 235, 0.4) !important;
-}
-
-.cell.ice {
-  background: linear-gradient(145deg, #e0ffff, #b0e0e6) !important;
-  border-color: #e0ffff !important;
-  box-shadow: 0 0 15px rgba(224, 255, 255, 0.4) !important;
-}
-
-.cell.thunder {
-  background: linear-gradient(145deg, #ffd700, #ffff00) !important;
-  border-color: #ffd700 !important;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4) !important;
-}
-
-.cell.dark {
-  background: linear-gradient(145deg, #4b0082, #663399) !important;
-  border-color: #4b0082 !important;
-  box-shadow: 0 0 15px rgba(75, 0, 130, 0.4) !important;
-}
-
-.cell.crystal {
-  background: linear-gradient(145deg, #da70d6, #ff69b4) !important;
-  border-color: #da70d6 !important;
-  box-shadow: 0 0 15px rgba(218, 112, 214, 0.4) !important;
-}
-
-/* Dice Section with Player Info */
-.dice-section {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 25px;
-  padding: 20px;
-  background: linear-gradient(145deg, rgba(26, 26, 46, 0.4), rgba(22, 33, 62, 0.4));
-  border-radius: 25px;
-  backdrop-filter: blur(15px);
-  border: 3px solid rgba(0, 245, 255, 0.4);
-  width: 100%;
-  max-width: 650px;
-  box-shadow: 0 15px 45px rgba(0, 245, 255, 0.2);
-}
-
-/* Player Info - Left and Right of Dice */
-.player-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 15px;
-  border-radius: 18px;
-  transition: all 0.5s ease;
-  min-width: 130px;
-  background: linear-gradient(145deg, rgba(26, 26, 46, 0.6), rgba(22, 33, 62, 0.6));
-  border: 3px solid rgba(0, 245, 255, 0.3);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-.player-info.active {
-  border-color: #00f5ff;
-  box-shadow: 0 0 30px rgba(0, 245, 255, 0.6);
-  transform: scale(1.08);
-  background: linear-gradient(145deg, rgba(0, 245, 255, 0.1), rgba(0, 128, 255, 0.1));
-}
-
-.player-avatar {
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  border: 4px solid #00f5ff;
-  background-size: cover;
-  background-position: center;
-  margin-bottom: 10px;
-  box-shadow: 0 0 20px rgba(0, 245, 255, 0.6);
-  transition: all 0.3s ease;
-}
-
-.player-avatar:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 25px rgba(0, 245, 255, 0.8);
-}
-
-.player-avatar.player { background-image: url('character.png'); }
-.player-avatar.cpu { background-image: url('character2.png'); }
-
-.player-name {
-  font-size: 15px;
-  font-weight: bold;
-  margin-bottom: 6px;
-  color: #00f5ff;
-  text-align: center;
-  text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
-}
-
-.player-money {
-  font-size: 18px;
-  color: #2ed573;
-  margin-bottom: 4px;
-  font-weight: bold;
-  text-align: center;
-  text-shadow: 0 0 10px rgba(46, 213, 115, 0.5);
-}
-
-.player-properties {
-  font-size: 11px;
-  color: #ccc;
-  text-align: center;
-}
-
-.dice-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.dice-container {
-  display: flex;
-  gap: 12px;
-}
-
-.dice {
-  width: clamp(55px, 13vw, 65px);
-  height: clamp(55px, 13vw, 65px);
-  background: linear-gradient(45deg, #00f5ff, #0080ff);
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: clamp(22px, 5.5vw, 26px);
-  font-weight: bold;
-  color: white;
-  cursor: pointer;
-  transition: all 0.4s ease;
-  box-shadow: 0 8px 25px rgba(0, 245, 255, 0.5);
-  border: 3px solid #fff;
-}
-
-.dice:hover {
-  transform: scale(1.15);
-  box-shadow: 0 12px 35px rgba(0, 245, 255, 0.7);
-}
-
-.dice.rolling {
-  animation: roll 0.8s ease-in-out;
-}
-
-@keyframes roll {
-  0% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(90deg) scale(1.2); }
-  50% { transform: rotate(180deg) scale(1.3); }
-  75% { transform: rotate(270deg) scale(1.2); }
-  100% { transform: rotate(360deg) scale(1); }
-}
-
-.roll-btn {
-  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
-  border: none;
-  padding: 15px 25px;
-  color: white;
-  border-radius: 25px;
-  font-size: clamp(15px, 3.8vw, 17px);
-  cursor: pointer;
-  transition: all 0.4s ease;
-  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
-  font-weight: bold;
-  min-width: 110px;
-}
-
-.roll-btn:hover:not(:disabled) {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 15px 40px rgba(255, 107, 107, 0.7);
-}
-
-.roll-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Purchase Panel */
-.purchase-panel {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: linear-gradient(145deg, rgba(26, 26, 46, 0.98), rgba(22, 33, 62, 0.98));
-  border: 3px solid #00f5ff;
-  border-radius: 20px;
-  padding: 20px;
-  z-index: 2000;
-  display: none;
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow-y: auto;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 0 50px rgba(0, 245, 255, 0.6);
-  text-align: center;
-}
-
-.purchase-title {
-  font-size: clamp(20px, 5vw, 24px);
-  color: #00f5ff;
-  margin-bottom: 15px;
-  font-weight: bold;
-}
-
-.property-details {
-  background: rgba(0, 0, 0, 0.4);
-  padding: 12px;
-  border-radius: 10px;
-  margin: 12px 0;
-  text-align: left;
-  border: 1px solid rgba(0, 245, 255, 0.2);
-  font-size: clamp(12px, 3vw, 14px);
-}
-
-.upgrade-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 10px;
-  margin: 15px 0;
-}
-
-.upgrade-btn {
-  background: linear-gradient(45deg, #ffa500, #ff8c00);
-  border: none;
-  padding: 12px 8px;
-  color: white;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: clamp(10px, 2.5vw, 12px);
-  font-weight: bold;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
-  min-height: 60px;
-}
-
-.upgrade-btn:hover:not(:disabled) {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(255, 165, 0, 0.5);
-}
-
-.upgrade-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.hotel-btn {
-  background: linear-gradient(45deg, #ff1493, #dc143c);
-}
-
-.battle-btn {
-  background: linear-gradient(45deg, #8b00ff, #4b0082);
-  grid-column: 1 / -1;
-  margin-top: 8px;
-}
-
-.skip-btn {
-  background: linear-gradient(45deg, #666, #888);
-  margin-top: 12px;
-  padding: 10px 20px;
-  font-size: clamp(14px, 3.5vw, 16px);
-  border-radius: 15px;
-  border: none;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-/* Airport Panel */
-.airport-panel {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: linear-gradient(145deg, rgba(26, 26, 46, 0.98), rgba(22, 33, 62, 0.98));
-  border: 3px solid #00ced1;
-  border-radius: 20px;
-  padding: 25px;
-  z-index: 2100;
-  display: none;
-  width: 90%;
-  max-width: 400px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 0 50px rgba(0, 206, 209, 0.6);
-  text-align: center;
-}
-
-.airport-title {
-  font-size: 22px;
-  color: #00ced1;
-  margin-bottom: 20px;
-  font-weight: bold;
-}
-
-.property-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin: 15px 0;
-}
-
-.property-option {
-  background: linear-gradient(45deg, #00ced1, #40e0d0);
-  color: #000;
-  border: none;
-  padding: 8px 4px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 10px;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  min-height: 40px;
-}
-
-.property-option:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(0, 206, 209, 0.5);
-}
-
-/* Battle System */
-.battle-arena {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: linear-gradient(145deg, rgba(26, 26, 46, 0.98), rgba(22, 33, 62, 0.98));
-  border: 3px solid #ff4757;
-  border-radius: 20px;
-  padding: 25px;
-  z-index: 2500;
-  display: none;
-  width: 90%;
-  max-width: 600px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 0 60px rgba(255, 71, 87, 0.8);
-  text-align: center;
-}
-
-.battle-title {
-  font-size: 24px;
-  color: #ff4757;
-  margin-bottom: 20px;
-  font-weight: bold;
-  text-shadow: 0 0 20px #ff4757;
-}
-
-.battle-field {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px 0;
-  gap: 20px;
-}
-
-.battle-player {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
-}
-
-.battle-avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background-size: cover;
-  background-position: center;
-  border: 4px solid #00f5ff;
-  margin-bottom: 10px;
-  transition: all 0.5s ease;
-}
-
-.battle-avatar.player { background-image: url('kryptomon.png'); }
-.battle-avatar.cpu { background-image: url('kryptomon2.png'); }
-
-.battle-avatar.attacking {
-  animation: attack 0.8s ease-in-out;
-}
-
-.battle-avatar.defending {
-  animation: defend 0.5s ease-in-out;
-}
-
-@keyframes attack {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2) translateX(20px); }
-  100% { transform: scale(1); }
-}
-
-@keyframes defend {
-  0% { transform: scale(1); }
-  25% { transform: scale(0.9); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-}
-
-.hp-bar {
-  width: 120px;
-  height: 20px;
-  background: #333;
-  border: 2px solid #fff;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 5px;
-}
-
-.hp-fill {
-  height: 100%;
-  background: linear-gradient(45deg, #2ed573, #00ff00);
-  transition: width 0.5s ease;
-  border-radius: 8px;
-}
-
-.hp-text {
-  font-size: 14px;
-  font-weight: bold;
-  color: #fff;
-}
-
-.battle-vs {
-  font-size: 28px;
-  color: #ff4757;
-  font-weight: bold;
-  text-shadow: 0 0 20px #ff4757;
-}
-
-.battle-actions {
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.battle-action-btn {
-  background: linear-gradient(45deg, #ff4757, #ff6b6b);
-  border: none;
-  padding: 12px 20px;
-  color: white;
-  border-radius: 15px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  min-width: 100px;
-}
-
-.battle-action-btn:hover:not(:disabled) {
-  transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(255, 71, 87, 0.5);
-}
-
-.battle-action-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background: linear-gradient(45deg, #666, #888);
-}
-
-.battle-log {
-  background: rgba(0, 0, 0, 0.4);
-  padding: 15px;
-  border-radius: 10px;
-  margin: 15px 0;
-  min-height: 80px;
-  border: 1px solid rgba(255, 71, 87, 0.3);
-  text-align: left;
-  font-size: 14px;
-  overflow-y: auto;
-  max-height: 120px;
-}
-
-/* Game Info */
-.game-info {
-  text-align: center;
-  font-size: clamp(15px, 3.8vw, 19px);
-  margin: 20px 0;
-  color: #00f5ff;
-  font-weight: bold;
-  padding: 12px 18px;
-  background: linear-gradient(145deg, rgba(26, 26, 46, 0.4), rgba(22, 33, 62, 0.4));
-  border-radius: 18px;
-  border: 3px solid rgba(0, 245, 255, 0.4);
-  backdrop-filter: blur(15px);
-  max-width: 450px;
-  width: 100%;
-  box-shadow: 0 10px 30px rgba(0, 245, 255, 0.2);
-  text-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
-}
-
-.back-btn {
-  background: linear-gradient(45deg, #666, #888);
-  border: none;
-  padding: 12px 25px;
-  color: white;
-  border-radius: 18px;
-  cursor: pointer;
-  margin: 25px auto;
-  display: block;
-  font-size: clamp(15px, 3.8vw, 17px);
-  font-weight: bold;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-.back-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
-}
-
-.close-btn {
-  background: #ff4757;
-  border: none;
-  padding: 6px 12px;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  float: right;
-  margin-bottom: 10px;
-  font-weight: bold;
-  font-size: clamp(12px, 3vw, 14px);
-}
-
-/* Message Box and other panels */
-.message-box {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: linear-gradient(145deg, rgba(26, 26, 46, 0.98), rgba(22, 33, 62, 0.98));
-  border: 3px solid #00f5ff;
-  border-radius: 15px;
-  padding: 20px 25px;
-  color: #fff;
-  font-size: clamp(14px, 3.5vw, 16px);
-  text-align: center;
-  z-index: 2500;
-  display: none;
-  backdrop-filter: blur(15px);
-  box-shadow: 0 0 50px rgba(0, 245, 255, 0.6);
-  max-width: 80%;
-  width: 300px;
-}
-
-/* Other panels */
-.chance-card, .jail-panel {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 20px;
-  padding: 25px;
-  z-index: 2000;
-  display: none;
-  width: 90%;
-  max-width: 400px;
-  text-align: center;
-  backdrop-filter: blur(15px);
-}
-
-.chance-card {
-  background: linear-gradient(145deg, rgba(153, 50, 204, 0.95), rgba(139, 0, 139, 0.95));
-  border: 3px solid #ffd700;
-  box-shadow: 0 0 50px rgba(255, 215, 0, 0.4);
-}
-
-.jail-panel {
-  background: linear-gradient(145deg, rgba(220, 20, 60, 0.95), rgba(178, 34, 34, 0.95));
-  border: 3px solid #fff;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
-  color: #fff;
-}
-
-.jail-buttons {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 15px;
-  flex-wrap: wrap;
-}
-
-.jail-btn {
-  background: linear-gradient(45deg, #ffa500, #ff8c00);
-  border: none;
-  padding: 10px 15px;
-  color: white;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: clamp(12px, 3vw, 14px);
-  transition: all 0.3s ease;
-  font-weight: bold;
-  min-width: 100px;
-}
-
-.jail-btn:hover {
-  transform: scale(1.05);
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .container {
-    padding: 5px;
-  }
-  
-  .dice-section {
-    padding: 15px;
-    gap: 12px;
-  }
-  
-  .player-info {
-    min-width: 110px;
-    padding: 12px;
-  }
-  
-  .board {
-    margin-bottom: 20px;
-  }
-  
-  .upgrade-options {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-  
-  .jail-buttons {
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .battle-field {
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .battle-actions {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .property-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  .dice-section {
-    gap: 8px;
-  }
-  
-  .player-info {
-    min-width: 90px;
-    padding: 10px;
-  }
-  
-  .upgrade-options {
-    grid-template-columns: 1fr;
-  }
-  
-  .dice-area {
-    gap: 10px;
-  }
-  
-  .property-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flappy Kryptomon - Enhanced Edition</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+    
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    
+    body {
+      background: #000;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* Animated background particles */
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 6s infinite ease-in-out;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+    
+    .game-container {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+    
+    canvas {
+      background: url("background.png") no-repeat center center;
+      background-size: cover;
+      display: block;
+      border-radius: 18px;
+      position: relative;
+    }
+    
+    .overlay {
+      position: absolute;
+      width: 400px;
+      height: 600px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      border-radius: 18px;
+      backdrop-filter: blur(15px);
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-align: center;
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #ff6b6b;
+    }
+    
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+    }
+    
+    button {
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background: linear-gradient(45deg, #4ecdc4, #44a08d);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    button:hover {
+      background: linear-gradient(45deg, #44a08d, #4ecdc4);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .score-display {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      z-index: 5;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 16px;
+      border-radius: 20px;
+    }
+    
+    .instructions {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>🐉 BUSINESS KRYPTOMON 🏠</h1>
+<div class="particles" id="particles"></div>
+
+<div class="game-container">
+  <div class="overlay" id="startScreen">
+    <h1>🎮 Flappy Kryptomon</h1>
+    <p>Enhanced Edition</p>
+    <button onclick="startGame()">🚀 Start Adventure</button>
+    <div class="instructions">
+      Click anywhere to make Kryptomon fly!
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="gameOverScreen">
+    <h2>💀 Game Over</h2>
+    <p id="finalScore">Score: 0</p>
+    <button onclick="restartGame()">🔄 Try Again</button>
+    <div class="instructions">
+      Keep practicing to improve your score!
+    </div>
+  </div>
+
+  <canvas id="gameCanvas" width="400" height="600"></canvas>
   
-  <!-- Menu Screen -->
-  <div id="menu" class="menu">
-    <button onclick="startGame()">🎮 Start Game</button>
-    <button onclick="showRules()">📖 How to Play</button>
-    <button onclick="exitGame()">❌ Exit</button>
+  <div class="score-display" id="scoreDisplay">
+    Score: 0
   </div>
-
-  <!-- Game Screen -->
-  <div id="game" class="game-container">
-    <div class="game-layout">
-      <!-- Game Board -->
-      <div class="board-container">
-        <div id="board" class="board"></div>
-        
-        <!-- Dice Section with Player Info -->
-        <div class="dice-section">
-          <!-- Left Player Info -->
-          <div id="playerInfo" class="player-info">
-            <div class="player-avatar player"></div>
-            <div class="player-name">👤 YOU</div>
-            <div class="player-money">💰 $<span id="playerMoney">1500</span></div>
-            <div class="player-properties">Props: <span id="playerProps">0</span></div>
-          </div>
-          
-          <!-- Dice Area -->
-          <div class="dice-area">
-            <div class="dice-container">
-              <div id="dice1" class="dice">1</div>
-              <div id="dice2" class="dice">1</div>
-            </div>
-            <button id="rollBtn" class="roll-btn" onclick="rollDice()">🎲 ROLL</button>
-          </div>
-          
-          <!-- Right Player Info -->
-          <div id="cpuInfo" class="player-info">
-            <div class="player-avatar cpu"></div>
-            <div class="player-name">🤖 CPU</div>
-            <div class="player-money">💰 $<span id="cpuMoney">1500</span></div>
-            <div class="player-properties">Props: <span id="cpuProps">0</span></div>
-          </div>
-        </div>
-
-        <div id="gameInfo" class="game-info">Your Turn - Roll the Dice!</div>
-      </div>
-    </div>
-
-    <button class="back-btn" onclick="backToMenu()">← Back to Menu</button>
-  </div>
-
-  <!-- Purchase Panel -->
-  <div id="purchasePanel" class="purchase-panel">
-    <button class="close-btn" onclick="closePurchasePanel()">✕</button>
-    <div class="purchase-title">Property Options</div>
-    <div class="property-details">
-      <p><strong>Property:</strong> <span id="propertyName">-</span></p>
-      <p><strong>Price:</strong> $<span id="propertyPrice">0</span></p>
-      <p><strong>Current Rent:</strong> $<span id="currentRentDisplay">0</span></p>
-    </div>
-    <div class="upgrade-options" id="upgradeOptions">
-      <button class="upgrade-btn" id="buyBtn" onclick="buyProperty()">Buy Property<br>$<span id="buyPrice">0</span></button>
-      <button class="upgrade-btn" onclick="upgradeProperty(1)">Level 1 🏠<br>$50<br>Rent: $<span id="rent1">0</span></button>
-      <button class="upgrade-btn" onclick="upgradeProperty(2)">Level 2 🏠🏠<br>$100<br>Rent: $<span id="rent2">0</span></button>
-      <button class="upgrade-btn" onclick="upgradeProperty(3)">Level 3 🏠🏠🏠<br>$150<br>Rent: $<span id="rent3">0</span></button>
-      <button class="upgrade-btn" onclick="upgradeProperty(4)">Level 4 🏠🏠🏠🏠<br>$200<br>Rent: $<span id="rent4">0</span></button>
-      <button class="upgrade-btn hotel-btn" onclick="buildHotel()">Hotel 🏨<br>$300<br>Rent: $<span id="rentHotel">0</span></button>
-      <button class="upgrade-btn battle-btn" id="battleBtn" onclick="startBattle()" style="display: none;">⚔️ Battle for Property!</button>
-    </div>
-    <button class="skip-btn" onclick="skipPurchase()">Skip</button>
-  </div>
-
-  <!-- Airport Panel -->
-  <div id="airportPanel" class="airport-panel">
-    <div class="airport-title">✈️ AIRPORT - Choose Destination</div>
-    <p style="margin-bottom: 15px;">Select a property to travel to:</p>
-    <div class="property-grid" id="airportGrid"></div>
-    <button class="skip-btn" onclick="closeAirportPanel()">Cancel</button>
-  </div>
-
-  <!-- Battle Arena -->
-  <div id="battleArena" class="battle-arena">
-    <div class="battle-title">⚔️ KRYPTOMON BATTLE ⚔️</div>
-    
-    <div class="battle-field">
-      <div class="battle-player">
-        <div class="battle-avatar player" id="playerBattleAvatar"></div>
-        <div class="hp-bar">
-          <div class="hp-fill" id="playerHpBar" style="width: 100%;"></div>
-        </div>
-        <div class="hp-text"><span id="playerBattleHp">100</span>/100 HP</div>
-        <div style="color: #00f5ff; font-weight: bold;">YOU</div>
-      </div>
-      
-      <div class="battle-vs">VS</div>
-      
-      <div class="battle-player">
-        <div class="battle-avatar cpu" id="cpuBattleAvatar"></div>
-        <div class="hp-bar">
-          <div class="hp-fill" id="cpuHpBar" style="width: 100%;"></div>
-        </div>
-        <div class="hp-text"><span id="cpuBattleHp">100</span>/100 HP</div>
-        <div style="color: #2ed573; font-weight: bold;">CPU</div>
-      </div>
-    </div>
-    
-    <div class="battle-log" id="battleLog">
-      Battle begins! Choose your action!
-    </div>
-    
-    <div class="battle-actions" id="battleActions">
-      <button class="battle-action-btn" onclick="battleAction('attack')">🗡️ Attack</button>
-      <button class="battle-action-btn" onclick="battleAction('defend')">🛡️ Defend</button>
-      <button class="battle-action-btn" id="magicBtn" onclick="battleAction('magic')">✨ Magic</button>
-    </div>
-  </div>
-
-  <!-- Chance Card -->
-  <div id="chanceCard" class="chance-card">
-    <h2>🎲 CHANCE 🎲</h2>
-    <div id="chanceText"></div>
-    <button class="jail-btn" onclick="closeChanceCard()" style="margin-top: 15px;">OK</button>
-  </div>
-
-  <!-- Jail Panel -->
-  <div id="jailPanel" class="jail-panel">
-    <h2>🔒 JAIL 🔒</h2>
-    <div id="jailText">You are in jail!</div>
-    <div class="jail-buttons">
-      <button class="jail-btn" onclick="payJailFine()">Pay $200 Fine</button>
-      <button class="jail-btn" onclick="tryJailRoll()">Try Double Roll</button>
-    </div>
-  </div>
-
-  <!-- Message Box -->
-  <div id="messageBox" class="message-box"></div>
 </div>
 
 <script>
-// Game State
-let gameState = {
-  currentPlayer: 0,
-  players: [
-    { 
-      name: 'You', 
-      money: 1500, 
-      position: 0, 
-      properties: {}, 
-      bankrupt: false, 
-      inJail: false, 
-      jailTurns: 0,
-      jailFreeCard: false,
-      hp: 100,
-      magicCooldown: 0
-    },
-    { 
-      name: 'CPU', 
-      money: 1500, 
-      position: 0, 
-      properties: {}, 
-      bankrupt: false, 
-      inJail: false, 
-      jailTurns: 0,
-      jailFreeCard: false,
-      hp: 100,
-      magicCooldown: 0
+// Create floating particles
+function createParticles() {
+  const particlesContainer = document.getElementById('particles');
+  const particleCount = 15;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.width = Math.random() * 8 + 4 + 'px';
+    particle.style.height = particle.style.width;
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.top = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 6 + 's';
+    particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+    particlesContainer.appendChild(particle);
+  }
+}
+
+// Initialize particles
+createParticles();
+
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+// Game constants - Made easier
+const GRAVITY = 0.4;  // Reduced from 0.5
+const JUMP = -7;      // Reduced from -8 for smoother control
+const PIPE_SPEED = 1.5; // Reduced from 2
+const PIPE_GAP = 160;   // Increased from 140
+
+let pipes = [];
+let score = 0;
+let gameRunning = false;
+let pipeInterval;
+let backgroundOffset = 0;
+
+// Load images
+const birdImg = new Image();
+birdImg.src = "kryptomon.png";
+
+const backgroundImg = new Image();
+backgroundImg.src = "background.png";
+
+// Audio with your existing files
+const jumpSound = new Audio("jump.mp3");
+const hitSound = new Audio("hit.mp3");
+const pointSound = new Audio("point.mp3");
+
+// Bird object with smoother physics
+let bird = {
+  x: 80,
+  y: 200,
+  width: 35,  // Slightly smaller for easier navigation
+  height: 35,
+  velocity: 0,
+  rotation: 0
+};
+
+function resetBird() {
+  bird.y = 250; // Start more centered
+  bird.velocity = 0;
+  bird.rotation = 0;
+}
+
+function drawBird() {
+  ctx.save();
+  ctx.translate(bird.x + bird.width / 2, bird.y + bird.height / 2);
+  ctx.rotate(bird.rotation);
+  
+  // Use your kryptomon.png if loaded, otherwise draw colorful fallback
+  if (birdImg.complete && birdImg.naturalHeight !== 0) {
+    ctx.drawImage(birdImg, -bird.width / 2, -bird.height / 2, bird.width, bird.height);
+  } else {
+    // Fallback colorful creature
+    const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, bird.width/2);
+    gradient.addColorStop(0, '#FFD700');
+    gradient.addColorStop(0.5, '#FF6B6B');
+    gradient.addColorStop(1, '#4ECDC4');
+    
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(0, 0, bird.width/2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Add eye
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.arc(5, -5, 6, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = 'black';
+    ctx.beginPath();
+    ctx.arc(7, -3, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  
+  ctx.restore();
+}
+
+function createPipe() {
+  const topHeight = Math.floor(Math.random() * 200) + 50;
+  const bottomY = topHeight + PIPE_GAP;
+  pipes.push({
+    x: canvas.width,
+    topHeight: topHeight,
+    bottomY: bottomY,
+    width: 60,
+    passed: false
+  });
+}
+
+function drawPipes() {
+  pipes.forEach(pipe => {
+    // Create 3D green pipes with gradient
+    const gradient = ctx.createLinearGradient(pipe.x, 0, pipe.x + pipe.width, 0);
+    gradient.addColorStop(0, '#006400');
+    gradient.addColorStop(0.3, '#32CD32');
+    gradient.addColorStop(0.7, '#228B22');
+    gradient.addColorStop(1, '#006400');
+    
+    ctx.fillStyle = gradient;
+    
+    // Top pipe
+    ctx.fillRect(pipe.x, 0, pipe.width, pipe.topHeight);
+    
+    // Bottom pipe
+    ctx.fillRect(pipe.x, pipe.bottomY, pipe.width, canvas.height - pipe.bottomY);
+    
+    // Add 3D border effect
+    ctx.strokeStyle = '#004000';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(pipe.x, 0, pipe.width, pipe.topHeight);
+    ctx.strokeRect(pipe.x, pipe.bottomY, pipe.width, canvas.height - pipe.bottomY);
+    
+    // Add highlight effect
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.fillRect(pipe.x + 2, 0, 8, pipe.topHeight);
+    ctx.fillRect(pipe.x + 2, pipe.bottomY, 8, canvas.height - pipe.bottomY);
+    
+    // Add pipe caps for 3D effect
+    ctx.fillStyle = '#228B22';
+    ctx.fillRect(pipe.x - 5, pipe.topHeight - 30, pipe.width + 10, 30);
+    ctx.fillRect(pipe.x - 5, pipe.bottomY, pipe.width + 10, 30);
+    
+    // Cap borders
+    ctx.strokeStyle = '#006400';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(pipe.x - 5, pipe.topHeight - 30, pipe.width + 10, 30);
+    ctx.strokeRect(pipe.x - 5, pipe.bottomY, pipe.width + 10, 30);
+  });
+}
+
+function checkCollision(pipe) {
+  // More forgiving collision detection
+  const margin = 3;
+  if (
+    bird.x + margin < pipe.x + pipe.width &&
+    bird.x + bird.width - margin > pipe.x &&
+    (bird.y + margin < pipe.topHeight || bird.y + bird.height - margin > pipe.bottomY)
+  ) {
+    return true;
+  }
+  if (bird.y + bird.height > canvas.height) return true;
+  return false;
+}
+
+function update() {
+  bird.velocity += GRAVITY;
+  bird.y += bird.velocity;
+  bird.rotation = Math.min(Math.PI / 6, bird.velocity / 8); // Smoother rotation
+
+  // Update background offset for parallax effect
+  backgroundOffset -= 0.5;
+
+  pipes.forEach(pipe => {
+    pipe.x -= PIPE_SPEED;
+
+    if (!pipe.passed && pipe.x + pipe.width < bird.x) {
+      score++;
+      pipe.passed = true;
+      document.getElementById('scoreDisplay').textContent = `Score: ${score}`;
+      try {
+        pointSound.play();
+      } catch (e) {
+        console.log("Point sound failed to play");
+      }
     }
-  ],
-  gameStarted: false,
-  canRoll: true,
-  lastRoll: [0, 0],
-  waitingForPlayer: false,
-  currentPropertyIndex: -1,
-  battleInProgress: false,
-  battleTurn: 0,
-  pendingAirportMove: false
-};
 
-// Board layout - Mystic Woods ile Airport yer değiştirildi
-const boardPositions = [
-  // Bottom row (0-4)
-  { name: 'START', type: 'start', price: 0, baseRent: 0, element: 'neutral' },
-  { name: 'Aelum Valley', type: 'property', price: 100, baseRent: 20, element: 'earth' },
-  { name: 'CHANCE', type: 'chance', price: 0, baseRent: 0, element: 'neutral' },
-  { name: 'Sha Mountains', type: 'property', price: 120, baseRent: 25, element: 'earth' },
-  { name: 'JAIL', type: 'jail', price: 0, baseRent: 0, element: 'neutral' },
-  
-  // Right column (5-7)
-  { name: 'Oura Canyon', type: 'property', price: 140, baseRent: 30, element: 'fire' },
-  { name: 'Mystic Woods', type: 'property', price: 220, baseRent: 50, element: 'dark' },
-  { name: 'Ukko Desert', type: 'property', price: 160, baseRent: 35, element: 'fire' },
-  
-  // Top row (8-11) - reversed order
-  { name: 'FREE PARKING', type: 'special', price: 0, baseRent: 0, element: 'neutral' },
-  { name: 'Haamu Peaks', type: 'property', price: 180, baseRent: 40, element: 'ice' },
-  { name: 'TAX', type: 'tax', price: 0, baseRent: 0, element: 'neutral' },
-  { name: 'Bosco Valley', type: 'property', price: 200, baseRent: 45, element: 'water' },
-  
-  // Left column (12-15) - reversed order
-  { name: 'AIRPORT', type: 'airport', price: 0, baseRent: 0, element: 'neutral' },
-  { name: 'Cryonia', type: 'property', price: 240, baseRent: 55, element: 'crystal' },
-  { name: 'Sky Temple', type: 'property', price: 260, baseRent: 60, element: 'air' },
-  { name: 'Thunder Peak', type: 'property', price: 280, baseRent: 65, element: 'thunder' }
-];
+    if (checkCollision(pipe)) {
+      endGame();
+    }
+  });
 
-// Chance cards (half rewards)
-const chanceCards = [
-  { text: "Get out of jail free! Keep this card.", effect: "jailFree" },
-  { text: "Collect $100 from bank!", effect: "collect100" },
-  { text: "Go to jail! Do not pass START.", effect: "goToJail" },
-  { text: "Pay $50 tax.", effect: "pay50" },
-  { text: "Advance to START! Collect $100.", effect: "goToStart" },
-  { text: "Collect $50 birthday money!", effect: "collect50" },
-  { text: "Pay $75 for property repairs.", effect: "pay75" },
-  { text: "You won a contest! Collect $150.", effect: "collect150" }
-];
+  pipes = pipes.filter(pipe => pipe.x + pipe.width > 0);
 
-// Battle actions with magic fix
-const battleActions = {
-  attack: { name: 'Attack', minDamage: 15, maxDamage: 25 },
-  defend: { name: 'Defend', defense: 10, counterDamage: 8 },
-  magic: { name: 'Magic', minDamage: 25, maxDamage: 40, cooldown: 3 }
-};
+  if (bird.y + bird.height > canvas.height || bird.y < 0) {
+    endGame();
+  }
+}
+
+function drawMovingBackground() {
+  // Draw your background.png with parallax scrolling effect
+  if (backgroundImg.complete && backgroundImg.naturalHeight !== 0) {
+    const bgWidth = backgroundImg.width;
+    const bgHeight = backgroundImg.height;
+    
+    // Scale background to fit canvas height
+    const scale = canvas.height / bgHeight;
+    const scaledWidth = bgWidth * scale;
+    
+    // Draw multiple copies for seamless scrolling
+    const offsetX = backgroundOffset % scaledWidth;
+    
+    ctx.drawImage(backgroundImg, offsetX, 0, scaledWidth, canvas.height);
+    ctx.drawImage(backgroundImg, offsetX + scaledWidth, 0, scaledWidth, canvas.height);
+    
+    if (offsetX < 0) {
+      ctx.drawImage(backgroundImg, offsetX - scaledWidth, 0, scaledWidth, canvas.height);
+    }
+  } else {
+    // Fallback gradient background
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, '#87CEEB');
+    gradient.addColorStop(1, '#98FB98');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+}
+
+function loop() {
+  if (!gameRunning) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawMovingBackground();
+  update();
+  drawBird();
+  drawPipes();
+  requestAnimationFrame(loop);
+}
+
+function jump() {
+  if (!gameRunning) return;
+  bird.velocity = JUMP;
+  bird.rotation = -0.3;
+  try {
+    jumpSound.play();
+  } catch (e) {
+    console.log("Jump sound failed to play");
+  }
+}
 
 function startGame() {
-  document.getElementById('menu').style.display = 'none';
-  document.getElementById('game').style.display = 'block';
-  gameState.gameStarted = true;
-  initializeBoard();
-  updateUI();
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("gameOverScreen").classList.add("hidden");
+  resetBird();
+  pipes = [];
+  score = 0;
+  backgroundOffset = 0;
+  document.getElementById('scoreDisplay').textContent = `Score: ${score}`;
+  gameRunning = true;
+  createPipe();
+  loop();
+  pipeInterval = setInterval(createPipe, 2000); // Slower pipe generation
 }
 
-function showRules() {
-  showMessage(`
-    🎮 BUSINESS KRYPTOMON RULES 🎮
-    
-    🎯 GOAL: Own 3 properties in a row to win!
-    
-    🎲 GAMEPLAY:
-    • Roll dice to move around the board
-    • Buy properties and upgrade them (4 levels + hotel)
-    • Battle other players for their properties
-    • Pay rent when landing on opponent's properties
-    
-    🔒 JAIL SYSTEM:
-    • Must roll EXACT DOUBLES to escape
-    • Or pay $200 fine to get out
-    • Stay in jail for max 3 turns
-    
-    ⚔️ BATTLE SYSTEM:
-    • Battle to steal opponent's properties
-    • Attack, Defend, or use Magic spells
-    • Magic has 3-turn cooldown
-    • Win by reducing opponent HP to 0
-    
-    ✈️ AIRPORT:
-    • Travel to any property on the board
-    • Works on your next turn
-    
-    💰 ECONOMICS:
-    • START gives $100 (reduced)
-    • Chance cards give half normal rewards
-    • Jail escape costs $200
-    
-    🏆 WIN CONDITIONS:
-    • Own 3 properties in a consecutive row
-    • OR opponent goes bankrupt
-  `, 8000);
-}
-
-function exitGame() {
-  if (confirm('Are you sure you want to exit?')) {
-    window.close();
+function endGame() {
+  try {
+    hitSound.play();
+  } catch (e) {
+    console.log("Hit sound failed to play");
   }
+  gameRunning = false;
+  clearInterval(pipeInterval);
+  document.getElementById("finalScore").innerText = `Score: ${score}`;
+  document.getElementById("gameOverScreen").classList.remove("hidden");
 }
 
-function backToMenu() {
-  document.getElementById('game').style.display = 'none';
-  document.getElementById('menu').style.display = 'block';
-  resetGame();
+function restartGame() {
+  startGame();
 }
 
-function resetGame() {
-  gameState = {
-    currentPlayer: 0,
-    players: [
-      { 
-        name: 'You', 
-        money: 1500, 
-        position: 0, 
-        properties: {}, 
-        bankrupt: false, 
-        inJail: false, 
-        jailTurns: 0,
-        jailFreeCard: false,
-        hp: 100,
-        magicCooldown: 0
-      },
-      { 
-        name: 'CPU', 
-        money: 1500, 
-        position: 0, 
-        properties: {}, 
-        bankrupt: false, 
-        inJail: false, 
-        jailTurns: 0,
-        jailFreeCard: false,
-        hp: 100,
-        magicCooldown: 0
-      }
-    ],
-    gameStarted: false,
-    canRoll: true,
-    lastRoll: [0, 0],
-    waitingForPlayer: false,
-    currentPropertyIndex: -1,
-    battleInProgress: false,
-    battleTurn: 0,
-    pendingAirportMove: false
-  };
-}
-
-function initializeBoard() {
-  const board = document.getElementById('board');
-  board.innerHTML = '';
-  
-  // 5x5 grid positions
-  const positions = [
-    0, 1, 2, 3, 4,    // Bottom row
-    15, '', '', '', 5,  // Left and right edges
-    14, '', '', '', 6,  // Left and right edges  
-    13, '', '', '', 7,  // Left and right edges
-    12, 11, 10, 9, 8   // Top row
-  ];
-  
-  positions.forEach((pos, index) => {
-    const cell = document.createElement('div');
-    
-    if (pos === '') {
-      cell.classList.add('cell', 'empty');
-    } else {
-      const property = boardPositions[pos];
-      cell.classList.add('cell', property.type);
-      
-      if (property.element && property.element !== 'neutral') {
-        cell.classList.add(property.element);
-      }
-      
-      // Cell name
-      const nameDiv = document.createElement('div');
-      nameDiv.classList.add('cell-name');
-      nameDiv.textContent = property.name;
-      cell.appendChild(nameDiv);
-      
-      // Rent display for properties
-      if (property.type === 'property') {
-        const rentDiv = document.createElement('div');
-        rentDiv.classList.add('cell-rent');
-        rentDiv.textContent = `$${property.baseRent}`;
-        rentDiv.id = `rent-${pos}`;
-        cell.appendChild(rentDiv);
-        
-        // Building display
-        const buildingDiv = document.createElement('div');
-        buildingDiv.classList.add('cell-building');
-        buildingDiv.id = `building-${pos}`;
-        cell.appendChild(buildingDiv);
-        
-        // Owner tag
-        const ownerDiv = document.createElement('div');
-        ownerDiv.classList.add('owner-tag');
-        ownerDiv.id = `owner-${pos}`;
-        ownerDiv.style.display = 'none';
-        cell.appendChild(ownerDiv);
-      }
-      
-      cell.id = `cell-${pos}`;
-    }
-    
-    board.appendChild(cell);
-  });
-  
-  // Add player tokens
-  updatePlayerPositions();
-}
-
-function updatePlayerPositions() {
-  // Remove existing tokens
-  document.querySelectorAll('.player-token').forEach(token => token.remove());
-  
-  // Add tokens to current positions
-  gameState.players.forEach((player, index) => {
-    const cell = document.getElementById(`cell-${player.position}`);
-    if (cell) {
-      const token = document.createElement('div');
-      token.classList.add('player-token', index === 0 ? 'token-player' : 'token-cpu');
-      cell.appendChild(token);
-    }
-  });
-}
-
-function rollDice() {
-  if (!gameState.canRoll || gameState.waitingForPlayer || gameState.battleInProgress) return;
-  
-  gameState.canRoll = false;
-  const dice1 = Math.floor(Math.random() * 6) + 1;
-  const dice2 = Math.floor(Math.random() * 6) + 1;
-  gameState.lastRoll = [dice1, dice2];
-  
-  // Animate dice
-  document.getElementById('dice1').classList.add('rolling');
-  document.getElementById('dice2').classList.add('rolling');
-  
-  setTimeout(() => {
-    document.getElementById('dice1').textContent = dice1;
-    document.getElementById('dice2').textContent = dice2;
-    document.getElementById('dice1').classList.remove('rolling');
-    document.getElementById('dice2').classList.remove('rolling');
-    
-    const currentPlayer = gameState.players[gameState.currentPlayer];
-    
-    // Handle jail logic
-    if (currentPlayer.inJail) {
-      handleJailRoll(dice1, dice2);
-      return;
-    }
-    
-    // Handle airport pending move
-    if (gameState.pendingAirportMove && gameState.currentPlayer === 0) {
-      gameState.pendingAirportMove = false;
-      showAirportPanel();
-      return;
-    }
-    
-    // Normal movement
-    const total = dice1 + dice2;
-    movePlayer(gameState.currentPlayer, total);
-    
-  }, 800);
-}
-
-function movePlayer(playerIndex, steps) {
-  const player = gameState.players[playerIndex];
-  const oldPosition = player.position;
-  
-  // Animate movement step by step
-  let currentStep = 0;
-  const moveInterval = setInterval(() => {
-    player.position = (player.position + 1) % 16;
-    
-    // Check for passing START
-    if (player.position === 0 && currentStep > 0) {
-      player.money += 100; // Reduced START bonus
-      showMessage(`${player.name} passed START! Collect $100`);
-    }
-    
-    updatePlayerPositions();
-    currentStep++;
-    
-    if (currentStep >= steps) {
-      clearInterval(moveInterval);
-      setTimeout(() => {
-        handleLanding(playerIndex);
-      }, 500);
-    }
-  }, 300); // Slower animation for visibility
-}
-
-function handleLanding(playerIndex) {
-  const player = gameState.players[playerIndex];
-  const position = boardPositions[player.position];
-  
-  updateGameInfo(`${player.name} landed on ${position.name}`);
-  
-  switch (position.type) {
-    case 'property':
-      gameState.currentPropertyIndex = player.position;
-      
-      // Check if property is owned
-      const owner = findPropertyOwner(player.position);
-      if (owner === null) {
-        // Unowned property
-        if (playerIndex === 0) {
-          showPurchasePanel(player.position);
-        } else {
-          // CPU decision
-          setTimeout(() => cpuPropertyDecision(player.position), 1000);
-        }
-      } else if (owner !== playerIndex) {
-        // Pay rent to opponent
-        payRent(playerIndex, owner, player.position);
-      } else {
-        // Own property - can upgrade
-        if (playerIndex === 0) {
-          showPurchasePanel(player.position);
-        } else {
-          // CPU upgrade decision
-          setTimeout(() => cpuUpgradeDecision(player.position), 1000);
-        }
-      }
-      break;
-      
-    case 'airport':
-      if (playerIndex === 0) {
-        gameState.pendingAirportMove = true;
-        updateGameInfo("Airport activated! Choose destination on your next turn.");
-        setTimeout(() => endTurn(), 1500);
-      } else {
-        // CPU chooses random property
-        setTimeout(() => {
-          const properties = boardPositions.filter(p => p.type === 'property');
-          const randomProp = properties[Math.floor(Math.random() * properties.length)];
-          const propIndex = boardPositions.indexOf(randomProp);
-          player.position = propIndex;
-          updatePlayerPositions();
-          updateGameInfo(`CPU traveled to ${randomProp.name}!`);
-          setTimeout(() => handleLanding(playerIndex), 1000);
-        }, 1000);
-      }
-      break;
-      
-    case 'chance':
-      drawChanceCard(playerIndex);
-      break;
-      
-    case 'jail':
-      if (playerIndex === 0) {
-        showMessage("Just visiting jail - no penalty!");
-        setTimeout(() => endTurn(), 1500);
-      } else {
-        setTimeout(() => endTurn(), 1000);
-      }
-      break;
-      
-    case 'tax':
-      const taxAmount = 100;
-      player.money -= taxAmount;
-      showMessage(`${player.name} paid $${taxAmount} tax!`);
-      setTimeout(() => endTurn(), 1500);
-      break;
-      
-    default:
-      setTimeout(() => endTurn(), 1000);
-      break;
-  }
-  
-  updateUI();
-}
-
-function showPurchasePanel(propertyIndex) {
-  const property = boardPositions[propertyIndex];
-  const owner = findPropertyOwner(propertyIndex);
-  const isOwned = owner !== null;
-  const isOwnProperty = owner === gameState.currentPlayer;
-  
-  document.getElementById('propertyName').textContent = property.name;
-  document.getElementById('propertyPrice').textContent = property.price;
-  
-  // Calculate current rent
-  let currentRent = property.baseRent;
-  if (isOwned) {
-    const propertyData = gameState.players[owner].properties[propertyIndex];
-    if (propertyData) {
-      currentRent = calculateRent(propertyIndex, propertyData.level);
-    }
-  }
-  document.getElementById('currentRentDisplay').textContent = currentRent;
-  
-  // Update rent displays
-  document.getElementById('rent1').textContent = Math.floor(property.baseRent * 1.5);
-  document.getElementById('rent2').textContent = property.baseRent * 2;
-  document.getElementById('rent3').textContent = Math.floor(property.baseRent * 2.5);
-  document.getElementById('rent4').textContent = property.baseRent * 3;
-  document.getElementById('rentHotel').textContent = property.baseRent * 4;
-  
-  // Buy button
-  const buyBtn = document.getElementById('buyBtn');
-  const battleBtn = document.getElementById('battleBtn');
-  
-  if (!isOwned) {
-    // Property not owned - show buy option
-    buyBtn.style.display = 'block';
-    buyBtn.disabled = gameState.players[gameState.currentPlayer].money < property.price;
-    document.getElementById('buyPrice').textContent = property.price;
-    battleBtn.style.display = 'none';
-  } else if (isOwnProperty) {
-    // Own property - hide buy and battle buttons
-    buyBtn.style.display = 'none';
-    battleBtn.style.display = 'none';
-  } else {
-    // Opponent's property - show battle option
-    buyBtn.style.display = 'none';
-    battleBtn.style.display = 'block';
-  }
-  
-  // Update upgrade buttons
-  updateUpgradeButtons(propertyIndex, isOwnProperty);
-  
-  gameState.waitingForPlayer = true;
-  document.getElementById('purchasePanel').style.display = 'block';
-}
-
-function updateUpgradeButtons(propertyIndex, isOwnProperty) {
-  const currentPlayer = gameState.players[gameState.currentPlayer];
-  const propertyData = currentPlayer.properties[propertyIndex];
-  const currentLevel = propertyData ? propertyData.level : 0;
-  
-  // Level upgrade buttons
-  for (let i = 1; i <= 4; i++) {
-    const btn = document.querySelector(`[onclick="upgradeProperty(${i})"]`);
-    if (btn) {
-      btn.disabled = !isOwnProperty || currentLevel >= i || currentPlayer.money < (i * 50);
-      btn.style.display = isOwnProperty ? 'block' : 'none';
-    }
-  }
-  
-  // Hotel button
-  const hotelBtn = document.querySelector('[onclick="buildHotel()"]');
-  if (hotelBtn) {
-    hotelBtn.disabled = !isOwnProperty || currentLevel !== 4 || currentPlayer.money < 300;
-    hotelBtn.style.display = isOwnProperty ? 'block' : 'none';
-  }
-}
-
-function buyProperty() {
-  const currentPlayer = gameState.players[gameState.currentPlayer];
-  const property = boardPositions[gameState.currentPropertyIndex];
-  
-  if (currentPlayer.money >= property.price) {
-    currentPlayer.money -= property.price;
-    currentPlayer.properties[gameState.currentPropertyIndex] = {
-      level: 0,
-      name: property.name
-    };
-    
-    updatePropertyDisplay(gameState.currentPropertyIndex);
-    showMessage(`${currentPlayer.name} bought ${property.name} for $${property.price}!`);
-    updateUI();
-    
-    setTimeout(() => {
-      closePurchasePanel();
-      endTurn();
-    }, 1500);
-  }
-}
-
-function upgradeProperty(level) {
-  const currentPlayer = gameState.players[gameState.currentPlayer];
-  const cost = level * 50;
-  
-  if (currentPlayer.money >= cost && currentPlayer.properties[gameState.currentPropertyIndex]) {
-    currentPlayer.money -= cost;
-    currentPlayer.properties[gameState.currentPropertyIndex].level = level;
-    
-    updatePropertyDisplay(gameState.currentPropertyIndex);
-    showMessage(`Property upgraded to Level ${level}!`);
-    updateUI();
-    
-    setTimeout(() => {
-      closePurchasePanel();
-      endTurn();
-    }, 1500);
-  }
-}
-
-function buildHotel() {
-  const currentPlayer = gameState.players[gameState.currentPlayer];
-  const cost = 300;
-  
-  if (currentPlayer.money >= cost && currentPlayer.properties[gameState.currentPropertyIndex]) {
-    currentPlayer.money -= cost;
-    currentPlayer.properties[gameState.currentPropertyIndex].level = 5; // Hotel
-    
-    updatePropertyDisplay(gameState.currentPropertyIndex);
-    showMessage(`Hotel built!`);
-    updateUI();
-    
-    setTimeout(() => {
-      closePurchasePanel();
-      endTurn();
-    }, 1500);
-  }
-}
-
-function skipPurchase() {
-  closePurchasePanel();
-  endTurn();
-}
-
-function closePurchasePanel() {
-  document.getElementById('purchasePanel').style.display = 'none';
-  gameState.waitingForPlayer = false;
-}
-
-function startBattle() {
-  closePurchasePanel();
-  
-  // Reset battle state
-  gameState.battleInProgress = true;
-  gameState.battleTurn = 0;
-  gameState.players[0].hp = 100;
-  gameState.players[1].hp = 100;
-  
-  // Reset magic cooldowns for battle
-  gameState.players[0].magicCooldown = 0;
-  gameState.players[1].magicCooldown = 0;
-  
-  document.getElementById('battleArena').style.display = 'block';
-  updateBattleUI();
-  
-  document.getElementById('battleLog').textContent = 'Battle begins! Choose your action!';
-}
-
-function battleAction(action) {
-  if (!gameState.battleInProgress) return;
-  
-  const attacker = gameState.currentPlayer;
-  const defender = 1 - gameState.currentPlayer;
-  
-  // Check magic cooldown
-  if (action === 'magic' && gameState.players[attacker].magicCooldown > 0) {
-    addBattleLog(`Magic is on cooldown! ${gameState.players[attacker].magicCooldown} turns remaining.`);
-    return;
-  }
-  
-  // Disable buttons during animation
-  disableBattleButtons(true);
-  
-  let damage = 0;
-  let logMessage = '';
-  
-  switch (action) {
-    case 'attack':
-      damage = Math.floor(Math.random() * (battleActions.attack.maxDamage - battleActions.attack.minDamage + 1)) + battleActions.attack.minDamage;
-      gameState.players[defender].hp = Math.max(0, gameState.players[defender].hp - damage);
-      logMessage = `${gameState.players[attacker].name} attacks for ${damage} damage!`;
-      animateBattleAction('attacking', attacker);
-      break;
-      
-    case 'defend':
-      damage = battleActions.defend.counterDamage;
-      gameState.players[defender].hp = Math.max(0, gameState.players[defender].hp - damage);
-      logMessage = `${gameState.players[attacker].name} defends and counters for ${damage} damage!`;
-      animateBattleAction('defending', attacker);
-      break;
-      
-    case 'magic':
-      damage = Math.floor(Math.random() * (battleActions.magic.maxDamage - battleActions.magic.minDamage + 1)) + battleActions.magic.minDamage;
-      gameState.players[defender].hp = Math.max(0, gameState.players[defender].hp - damage);
-      gameState.players[attacker].magicCooldown = battleActions.magic.cooldown;
-      logMessage = `${gameState.players[attacker].name} casts magic for ${damage} damage! Magic on cooldown for 3 turns.`;
-      animateBattleAction('attacking', attacker);
-      break;
-  }
-  
-  addBattleLog(logMessage);
-  updateBattleUI();
-  
-  // Check for battle end
-  setTimeout(() => {
-    if (gameState.players[defender].hp <= 0) {
-      endBattle(attacker);
-    } else {
-      // Switch turns
-      gameState.currentPlayer = defender;
-      gameState.battleTurn++;
-      
-      // Reduce magic cooldowns
-      for (let i = 0; i < 2; i++) {
-        if (gameState.players[i].magicCooldown > 0) {
-          gameState.players[i].magicCooldown--;
-        }
-      }
-      
-      if (gameState.currentPlayer === 1) {
-        // CPU turn
-        setTimeout(() => cpuBattleAction(), 1500);
-      } else {
-        // Player turn
-        disableBattleButtons(false);
-        updateBattleUI();
-      }
-    }
-  }, 2000);
-}
-
-function animateBattleAction(animationType, playerIndex) {
-  const avatar = document.getElementById(playerIndex === 0 ? 'playerBattleAvatar' : 'cpuBattleAvatar');
-  avatar.classList.add(animationType);
-  
-  setTimeout(() => {
-    avatar.classList.remove(animationType);
-  }, 800);
-}
-
-function addBattleLog(message) {
-  const log = document.getElementById('battleLog');
-  log.textContent += '\n' + message;
-  log.scrollTop = log.scrollHeight;
-}
-
-function updateBattleUI() {
-  // Update HP bars and text
-  document.getElementById('playerBattleHp').textContent = gameState.players[0].hp;
-  document.getElementById('cpuBattleHp').textContent = gameState.players[1].hp;
-  
-  const playerHpPercent = (gameState.players[0].hp / 100) * 100;
-  const cpuHpPercent = (gameState.players[1].hp / 100) * 100;
-  
-  document.getElementById('playerHpBar').style.width = playerHpPercent + '%';
-  document.getElementById('cpuHpBar').style.width = cpuHpPercent + '%';
-  
-  // Update magic button
-  const magicBtn = document.getElementById('magicBtn');
-  const playerCooldown = gameState.players[gameState.currentPlayer].magicCooldown;
-  
-  if (playerCooldown > 0) {
-    magicBtn.textContent = `✨ Magic (${playerCooldown})`;
-    magicBtn.disabled = true;
-  } else {
-    magicBtn.textContent = '✨ Magic';
-    magicBtn.disabled = false;
-  }
-}
-
-function disableBattleButtons(disabled) {
-  const buttons = document.querySelectorAll('.battle-action-btn');
-  buttons.forEach(btn => {
-    if (disabled) {
-      btn.disabled = true;
-    } else {
-      // Only enable if not on cooldown (for magic) or if it's not magic button
-      if (btn.id === 'magicBtn') {
-        btn.disabled = gameState.players[gameState.currentPlayer].magicCooldown > 0;
-      } else {
-        btn.disabled = false;
-      }
-    }
-  });
-}
-
-function cpuBattleAction() {
-  if (gameState.currentPlayer !== 1) return;
-  
-  // CPU AI for battle
-  let action = 'attack';
-  const cpuHp = gameState.players[1].hp;
-  const playerHp = gameState.players[0].hp;
-  
-  // Use magic if available and enemy has high HP
-  if (gameState.players[1].magicCooldown === 0 && playerHp > 40) {
-    action = 'magic';
-  }
-  // Defend if low on HP
-  else if (cpuHp < 30) {
-    action = 'defend';
-  }
-  // Otherwise attack
-  else {
-    action = 'attack';
-  }
-  
-  addBattleLog(`CPU chooses ${action}!`);
-  setTimeout(() => battleAction(action), 1000);
-}
-
-function endBattle(winner) {
-  gameState.battleInProgress = false;
-  const loser = 1 - winner;
-  
-  addBattleLog(`${gameState.players[winner].name} wins the battle!`);
-  
-  setTimeout(() => {
-    if (winner === gameState.currentPlayer) {
-      // Current player wins - steal the property
-      const propertyIndex = gameState.currentPropertyIndex;
-      const property = boardPositions[propertyIndex];
-      
-      // Transfer property
-      delete gameState.players[loser].properties[propertyIndex];
-      gameState.players[winner].properties[propertyIndex] = {
-        level: 0,
-        name: property.name
-      };
-      
-      updatePropertyDisplay(propertyIndex);
-      showMessage(`${gameState.players[winner].name} wins the battle and takes ${property.name}!`);
-    }
-    
-    // Close battle arena and end turn
-    setTimeout(() => {
-      document.getElementById('battleArena').style.display = 'none';
-      
-      // Reset to original current player for turn end
-      gameState.currentPlayer = winner;
-      endTurn();
-    }, 2000);
-  }, 2000);
-}
-
-function showAirportPanel() {
-  const grid = document.getElementById('airportGrid');
-  if (!grid) {
-    console.error('Airport grid element not found');
-    return;
-  }
-  
-  grid.innerHTML = '';
-  
-  // Add all properties as options
-  boardPositions.forEach((pos, index) => {
-    if (pos.type === 'property') {
-      const btn = document.createElement('button');
-      btn.classList.add('property-option');
-      btn.textContent = pos.name;
-      btn.onclick = () => selectAirportDestination(index);
-      grid.appendChild(btn);
-    }
-  });
-  
-  document.getElementById('airportPanel').style.display = 'block';
-}
-
-function selectAirportDestination(propertyIndex) {
-  const player = gameState.players[gameState.currentPlayer];
-  const property = boardPositions[propertyIndex];
-  
-  player.position = propertyIndex;
-  updatePlayerPositions();
-  updateGameInfo(`You traveled to ${property.name}!`);
-  
-  closeAirportPanel();
-  
-  // Handle landing on the chosen property
-  setTimeout(() => {
-    handleLanding(gameState.currentPlayer);
-  }, 1000);
-}
-
-function closeAirportPanel() {
-  document.getElementById('airportPanel').style.display = 'none';
-}
-
-function payRent(payerIndex, ownerIndex, propertyIndex) {
-  const payer = gameState.players[payerIndex];
-  const owner = gameState.players[ownerIndex];
-  const propertyData = owner.properties[propertyIndex];
-  
-  const rent = calculateRent(propertyIndex, propertyData.level);
-  
-  if (payer.money >= rent) {
-    payer.money -= rent;
-    owner.money += rent;
-    showMessage(`${payer.name} paid $${rent} rent to ${owner.name}!`);
-    updateUI();
-    setTimeout(() => endTurn(), 1500);
-  } else {
-    // Not enough money - need to sell properties or go bankrupt
-    showMessage(`${payer.name} doesn't have enough money to pay rent!`);
-    setTimeout(() => endTurn(), 1500);
-  }
-}
-
-function calculateRent(propertyIndex, level) {
-  const property = boardPositions[propertyIndex];
-  const baseRent = property.baseRent;
-  
-  switch (level) {
-    case 0: return baseRent;
-    case 1: return Math.floor(baseRent * 1.5);
-    case 2: return baseRent * 2;
-    case 3: return Math.floor(baseRent * 2.5);
-    case 4: return baseRent * 3;
-    case 5: return baseRent * 4; // Hotel
-    default: return baseRent;
-  }
-}
-
-function drawChanceCard(playerIndex) {
-  const card = chanceCards[Math.floor(Math.random() * chanceCards.length)];
-  const player = gameState.players[playerIndex];
-  
-  document.getElementById('chanceText').innerHTML = `<p>${card.text}</p>`;
-  document.getElementById('chanceCard').style.display = 'block';
-  
-  // Apply card effect
-  switch (card.effect) {
-    case 'jailFree':
-      player.jailFreeCard = true;
-      break;
-    case 'collect100':
-      player.money += 100;
-      break;
-    case 'collect50':
-      player.money += 50;
-      break;
-    case 'collect150':
-      player.money += 150;
-      break;
-    case 'pay50':
-      player.money = Math.max(0, player.money - 50);
-      break;
-    case 'pay75':
-      player.money = Math.max(0, player.money - 75);
-      break;
-    case 'goToJail':
-      sendToJail(playerIndex);
-      break;
-    case 'goToStart':
-      player.position = 0;
-      player.money += 100;
-      updatePlayerPositions();
-      break;
-  }
-  
-  updateUI();
-}
-
-function closeChanceCard() {
-  document.getElementById('chanceCard').style.display = 'none';
-  setTimeout(() => endTurn(), 500);
-}
-
-function sendToJail(playerIndex) {
-  const player = gameState.players[playerIndex];
-  player.position = 4; // Jail position
-  player.inJail = true;
-  player.jailTurns = 0;
-  updatePlayerPositions();
-  updateGameInfo(`${player.name} is sent to jail!`);
-}
-
-function handleJailRoll(dice1, dice2) {
-  const player = gameState.players[gameState.currentPlayer];
-  
-  if (dice1 === dice2) {
-    // Rolled doubles - get out of jail
-    player.inJail = false;
-    player.jailTurns = 0;
-    showMessage(`${player.name} rolled doubles and escaped jail!`);
-    
-    // Move normally
-    const total = dice1 + dice2;
-    setTimeout(() => {
-      movePlayer(gameState.currentPlayer, total);
-    }, 1500);
-  } else {
-    // Didn't roll doubles
-    player.jailTurns++;
-    
-    if (player.jailTurns >= 3) {
-      // Must pay to get out after 3 turns
-      player.money -= 200;
-      player.inJail = false;
-      player.jailTurns = 0;
-      showMessage(`${player.name} paid $200 to get out of jail after 3 turns!`);
-      
-      // Move normally
-      const total = dice1 + dice2;
-      setTimeout(() => {
-        movePlayer(gameState.currentPlayer, total);
-      }, 1500);
-    } else {
-      showMessage(`${player.name} didn't roll doubles. ${3 - player.jailTurns} turns remaining in jail.`);
-      setTimeout(() => endTurn(), 1500);
-    }
-  }
-  
-  updateUI();
-}
-
-function showJailPanel() {
-  const player = gameState.players[gameState.currentPlayer];
-  document.getElementById('jailText').textContent = `You are in jail! Turn ${player.jailTurns + 1}/3`;
-  document.getElementById('jailPanel').style.display = 'block';
-}
-
-function payJailFine() {
-  const player = gameState.players[gameState.currentPlayer];
-  
-  if (player.money >= 200) {
-    player.money -= 200;
-    player.inJail = false;
-    player.jailTurns = 0;
-    document.getElementById('jailPanel').style.display = 'none';
-    
-    showMessage("Paid $200 fine and escaped jail! Roll dice to move.");
-    gameState.canRoll = true;
-    updateUI();
-  } else {
-    showMessage("Not enough money to pay the fine!");
-  }
-}
-
-function tryJailRoll() {
-  document.getElementById('jailPanel').style.display = 'none';
-  gameState.canRoll = true;
-  updateGameInfo("Roll doubles to escape jail!");
-}
-
-function cpuPropertyDecision(propertyIndex) {
-  const cpu = gameState.players[1];
-  const property = boardPositions[propertyIndex];
-  
-  // CPU AI: Buy if has enough money and property is reasonably priced
-  if (cpu.money >= property.price && property.price <= 200) {
-    cpu.money -= property.price;
-    cpu.properties[propertyIndex] = {
-      level: 0,
-      name: property.name
-    };
-    
-    updatePropertyDisplay(propertyIndex);
-    showMessage(`CPU bought ${property.name} for $${property.price}!`);
-    updateUI();
-  }
-  
-  setTimeout(() => endTurn(), 1500);
-}
-
-function cpuUpgradeDecision(propertyIndex) {
-  const cpu = gameState.players[1];
-  const propertyData = cpu.properties[propertyIndex];
-  
-  if (propertyData && cpu.money >= 100) {
-    // Try to upgrade if affordable
-    const nextLevel = Math.min(propertyData.level + 1, 4);
-    const cost = nextLevel * 50;
-    
-    if (cpu.money >= cost && nextLevel > propertyData.level) {
-      cpu.money -= cost;
-      propertyData.level = nextLevel;
-      
-      updatePropertyDisplay(propertyIndex);
-      showMessage(`CPU upgraded ${propertyData.name} to Level ${nextLevel}!`);
-      updateUI();
-    }
-  }
-  
-  setTimeout(() => endTurn(), 1500);
-}
-
-function endTurn() {
-  gameState.currentPlayer = 1 - gameState.currentPlayer;
-  gameState.canRoll = true;
-  gameState.waitingForPlayer = false;
-  
-  updateUI();
-  
-  // Check win condition
-  const winner = checkWinCondition();
-  if (winner !== null) {
-    setTimeout(() => {
-      showMessage(`🎉 ${gameState.players[winner].name} WINS! 🎉\n\nOwned 3 properties in a row!`, 5000);
-    }, 1000);
-    return;
-  }
-  
-  // CPU turn
-  if (gameState.currentPlayer === 1 && !gameState.players[1].inJail) {
-    setTimeout(() => {
-      if (gameState.players[1].inJail) {
-        rollDice(); // Will handle jail logic
-      } else {
-        rollDice();
-      }
-    }, 2000);
-  }
-}
-
-function checkWinCondition() {
-  for (let playerIndex = 0; playerIndex < 2; playerIndex++) {
-    const player = gameState.players[playerIndex];
-    const ownedProperties = Object.keys(player.properties).map(Number).sort((a, b) => a - b);
-    
-    if (ownedProperties.length >= 3) {
-      // Check for 3 consecutive properties
-      for (let i = 0; i <= ownedProperties.length - 3; i++) {
-        let consecutive = 1;
-        for (let j = i + 1; j < ownedProperties.length; j++) {
-          if (ownedProperties[j] === ownedProperties[j-1] + 1) {
-            consecutive++;
-            if (consecutive >= 3) {
-              return playerIndex;
-            }
-          } else {
-            break;
-          }
-        }
-      }
-    }
-  }
-  
-  // Check for bankruptcy
-  for (let playerIndex = 0; playerIndex < 2; playerIndex++) {
-    if (gameState.players[playerIndex].bankrupt) {
-      return 1 - playerIndex;
-    }
-  }
-  
-  return null;
-}
-
-function findPropertyOwner(propertyIndex) {
-  for (let i = 0; i < gameState.players.length; i++) {
-    if (gameState.players[i].properties[propertyIndex]) {
-      return i;
-    }
-  }
-  return null;
-}
-
-function updatePropertyDisplay(propertyIndex) {
-  const owner = findPropertyOwner(propertyIndex);
-  const ownerTag = document.getElementById(`owner-${propertyIndex}`);
-  const buildingDiv = document.getElementById(`building-${propertyIndex}`);
-  const rentDiv = document.getElementById(`rent-${propertyIndex}`);
-  
-  if (owner !== null) {
-    const player = gameState.players[owner];
-    const propertyData = player.properties[propertyIndex];
-    
-    // Show owner tag
-    ownerTag.style.display = 'block';
-    ownerTag.textContent = owner === 0 ? 'YOU' : 'CPU';
-    ownerTag.className = `owner-tag ${owner === 0 ? 'owner-player' : 'owner-cpu'}`;
-    
-    // Show buildings
-    if (propertyData.level > 0) {
-      if (propertyData.level === 5) {
-        buildingDiv.textContent = '🏨';
-      } else {
-        buildingDiv.textContent = '🏠'.repeat(propertyData.level);
-      }
-    }
-    
-    // Update rent display
-    const newRent = calculateRent(propertyIndex, propertyData.level);
-    rentDiv.textContent = `$${newRent}`;
-  } else {
-    ownerTag.style.display = 'none';
-    buildingDiv.textContent = '';
-  }
-}
-
-function updateUI() {
-  // Update player info
-  document.getElementById('playerMoney').textContent = gameState.players[0].money;
-  document.getElementById('cpuMoney').textContent = gameState.players[1].money;
-  
-  // Count properties
-  const playerProps = Object.keys(gameState.players[0].properties).length;
-  const cpuProps = Object.keys(gameState.players[1].properties).length;
-  
-  document.getElementById('playerProps').textContent = playerProps;
-  document.getElementById('cpuProps').textContent = cpuProps;
-  
-  // Update active player indicator
-  const playerInfo = document.getElementById('playerInfo');
-  const cpuInfo = document.getElementById('cpuInfo');
-  
-  if (gameState.currentPlayer === 0) {
-    playerInfo.classList.add('active');
-    cpuInfo.classList.remove('active');
-    updateGameInfo("Your Turn - Roll the Dice!");
-  } else {
-    playerInfo.classList.remove('active');
-    cpuInfo.classList.add('active');
-    updateGameInfo("CPU's Turn");
-  }
-  
-  // Update roll button
-  const rollBtn = document.getElementById('rollBtn');
-  rollBtn.disabled = !gameState.canRoll || gameState.currentPlayer === 1 || gameState.waitingForPlayer;
-  
-  // Show jail panel if player is in jail
-  if (gameState.players[0].inJail && gameState.currentPlayer === 0 && gameState.canRoll) {
-    showJailPanel();
-  }
-}
-
-function updateGameInfo(message) {
-  document.getElementById('gameInfo').textContent = message;
-}
-
-function showMessage(message, duration = 3000) {
-  const messageBox = document.getElementById('messageBox');
-  messageBox.innerHTML = message.replace(/\n/g, '<br>');
-  messageBox.style.display = 'block';
-  
-  setTimeout(() => {
-    messageBox.style.display = 'none';
-  }, duration);
-}
-
-// Initialize game when page loads
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('Business Kryptomon loaded successfully!');
+// Mouse and touch controls (replacing keyboard)
+canvas.addEventListener("click", jump);
+canvas.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  jump();
 });
+
+// Prevent context menu on right click
+canvas.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+});
+
+// Add cursor pointer when hovering over canvas
+canvas.addEventListener("mouseenter", () => {
+  canvas.style.cursor = "pointer";
+});
+
+canvas.addEventListener("mouseleave", () => {
+  canvas.style.cursor = "default";
+});
+
+// Initial cursor setup
+canvas.style.cursor = "pointer";
+
 </script>
 </body>
 </html>
